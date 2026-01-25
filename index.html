@@ -3,68 +3,519 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Autograph Karaoke Menu</title>
+  <title>AUTOGRAPH — QR Menu</title>
   <style>
-    body {margin:0;font-family:Arial,Helvetica,sans-serif;background:#0b0b0b;color:#f5f5f5;}
-    header {padding:20px;text-align:center;border-bottom:2px solid #bfa46a;}
-    h1 {margin:0;letter-spacing:4px;color:#bfa46a;}
-    .lang button {margin:6px;padding:6px 12px;background:#000;color:#bfa46a;border:1px solid #bfa46a;border-radius:6px;cursor:pointer;}
-    .container {padding:20px;max-width:900px;margin:auto;}
-    .category {margin-top:40px;}
-    .category h2 {border-bottom:1px solid #bfa46a;padding-bottom:6px;color:#bfa46a;}
-    .item {display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed #333;}
-    .controls button {margin:0 4px;padding:4px 10px;}
-    .cart {position:fixed;bottom:0;left:0;right:0;background:#111;padding:15px;border-top:2px solid #bfa46a;}
-    .cart-items {font-size:14px;margin-bottom:6px;}
-    .total {font-size:18px;font-weight:bold;color:#bfa46a;}
-    .clear {float:right;background:#300;color:#fff;border:none;padding:6px 10px;border-radius:6px;}
+    :root{
+      --bg:#0b0b0b;
+      --panel:#111;
+      --gold:#bfa46a;
+      --text:#f5f5f5;
+      --muted:#bdbdbd;
+      --line:#2a2a2a;
+      --btn:#000;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+    header{padding:18px 14px;text-align:center;border-bottom:2px solid var(--gold)}
+    h1{margin:0;letter-spacing:4px;color:var(--gold);font-size:22px}
+    .topbar{display:flex;gap:10px;justify-content:center;align-items:center;margin-top:10px;flex-wrap:wrap}
+    .chip{border:1px solid var(--gold);color:var(--gold);background:var(--btn);padding:6px 10px;border-radius:10px;cursor:pointer}
+    .chip.active{background:var(--gold);color:#0b0b0b;font-weight:700}
+    .wrap{max-width:980px;margin:0 auto;padding:16px 14px 140px}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:10px 0 16px}
+    .search{
+      flex:1;min-width:220px;max-width:520px;
+      background:#0f0f0f;border:1px solid var(--line);
+      color:var(--text);padding:10px 12px;border-radius:12px;
+      outline:none;
+    }
+    .tabs{display:flex;gap:8px;flex-wrap:wrap}
+    .tab{border:1px solid var(--gold);background:transparent;color:var(--gold);padding:8px 10px;border-radius:12px;cursor:pointer}
+    .tab.active{background:var(--gold);color:#0b0b0b;font-weight:700}
+    .category{margin:22px 0}
+    .category h2{margin:0 0 10px;color:var(--gold);font-size:18px;border-bottom:1px solid var(--gold);padding-bottom:6px}
+    .item{
+      display:flex;gap:10px;justify-content:space-between;align-items:center;
+      padding:10px 0;border-bottom:1px dashed var(--line)
+    }
+    .iname{font-size:14px;line-height:1.25}
+    .iprice{color:var(--muted);font-size:13px;margin-left:8px;white-space:nowrap}
+    .controls{display:flex;align-items:center;gap:8px;flex-shrink:0}
+    .btn{
+      width:34px;height:34px;border-radius:10px;
+      border:1px solid var(--gold);background:transparent;color:var(--gold);
+      font-size:18px;cursor:pointer
+    }
+    .qty{min-width:18px;text-align:center;font-weight:700;color:var(--text)}
+    .cart{
+      position:fixed;left:0;right:0;bottom:0;
+      background:linear-gradient(180deg, rgba(17,17,17,0.92), rgba(17,17,17,0.98));
+      border-top:2px solid var(--gold);
+      padding:12px 14px;
+      backdrop-filter: blur(6px);
+    }
+    .cart-inner{max-width:980px;margin:0 auto;display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+    .cart-left{min-width:240px;flex:1}
+    .cart-title{color:var(--muted);font-size:12px;margin-bottom:6px}
+    .cart-items{font-size:13px;line-height:1.35;max-height:80px;overflow:auto;padding-right:6px}
+    .cart-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+    .total{font-size:16px;font-weight:800;color:var(--gold)}
+    .small{font-size:12px;color:var(--muted)}
+    .action{
+      border:none;border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:700
+    }
+    .clear{background:#3a0b0b;color:#fff}
+    .waiter{background:var(--gold);color:#0b0b0b}
+    .svc-toggle{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}
+    .svc-toggle input{transform:scale(1.1)}
+    /* modal */
+    .modal-backdrop{
+      position:fixed;inset:0;background:rgba(0,0,0,.65);
+      display:none;align-items:center;justify-content:center;padding:14px;
+    }
+    .modal{max-width:560px;width:100%;background:#0f0f0f;border:1px solid var(--gold);
+      border-radius:16px;padding:14px}
+    .modal h3{margin:0 0 10px;color:var(--gold);letter-spacing:1px}
+    .modal pre{white-space:pre-wrap;word-break:break-word;background:#0b0b0b;border:1px solid var(--line);
+      border-radius:12px;padding:10px;color:var(--text);font-size:13px}
+    .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap}
+    .modal-actions .action{padding:10px 14px}
+    .copy{background:#1a1a1a;color:var(--gold);border:1px solid var(--gold)}
+    .close{background:#222;color:#fff;border:1px solid #444}
   </style>
 </head>
 <body>
-<header>
-  <h1>AUTOGRAPH</h1>
-  <div class="lang">
-    <button onclick="setLang('ru')">RU</button>
-    <button onclick="setLang('kz')">KZ</button>
+  <header>
+    <h1>AUTOGRAPH</h1>
+    <div class="topbar">
+      <button class="chip active" id="ruBtn" onclick="setLang('ru')">RU</button>
+      <button class="chip" id="kzBtn" onclick="setLang('kz')">KZ</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="toolbar">
+      <input id="q" class="search" placeholder="Поиск по меню..." oninput="render()" />
+      <div class="tabs">
+        <button class="tab active" id="tabAll" onclick="setSection('all')">Всё</button>
+        <button class="tab" id="tabFood" onclick="setSection('food')">Кухня</button>
+        <button class="tab" id="tabBar" onclick="setSection('bar')">Бар</button>
+      </div>
+    </div>
+
+    <div id="menu"></div>
   </div>
-</header>
 
-<div class="container" id="menu"></div>
+  <div class="cart">
+    <div class="cart-inner">
+      <div class="cart-left">
+        <div class="cart-title" id="cartTitle">Выбрано:</div>
+        <div class="cart-items" id="cartItems">Корзина пуста</div>
+      </div>
 
-<div class="cart">
-  <div class="cart-items" id="cartItems"></div>
-  <span class="total" id="total">Итого: 0 ₸</span>
-  <button class="clear" onclick="clearCart()">Очистить</button>
-</div>
+      <div class="cart-right">
+        <label class="svc-toggle">
+          <input type="checkbox" id="svc" checked onchange="updateCart()" />
+          <span id="svcLabel">Сервис 10%</span>
+        </label>
+        <div>
+          <div class="total" id="total">Итого: 0 ₸</div>
+          <div class="small" id="breakdown"></div>
+        </div>
+        <button class="action clear" onclick="clearCart()" id="clearBtn">Очистить</button>
+        <button class="action waiter" onclick="showWaiter()" id="waiterBtn">Показать официанту</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="mb" onclick="if(event.target.id==='mb')hideModal()">
+    <div class="modal">
+      <h3 id="modalTitle">Заказ</h3>
+      <pre id="orderText"></pre>
+      <div class="modal-actions">
+        <button class="action copy" onclick="copyOrder()">Скопировать</button>
+        <button class="action close" onclick="hideModal()">Закрыть</button>
+      </div>
+    </div>
+  </div>
 
 <script>
-const data = {
-ru:{categories:[
-{name:'Супы',items:[['Крем-суп из чечевицы',2260],['Рамен с курицей',4660],['Рамен с говядиной',5990],['Том ям с морепродуктами',5990]]},
-{name:'Салаты',items:[['Салат с карамелизированной грушей и грецким орехом',4560],['Салат с манго',4860],['Салат "Баварский"',4960],['Хрустящие баклажаны',4990],['Цезарь с цыплёнком',5690],['Цезарь с креветками',5690],['Цезарь с лососем',5690],['Тёплый салат с лососем',5990],['Салат с говядиной',5990],['Салат с рукколой и креветками',6290],['Салат с ростбифом',5990],['Салат с моцареллой, авокадо и халуми',5600],['Оливье с сёмгой',4400]]},
-{name:'Вторые блюда',items:[['Печень с грибами',4400],['Бефстроганов из телятины',8660],['Сибас',10990],['Дорадо',10990],['Филе миньон',11990],['Стейк Рибай',12660],['Стейк Ти-Бон',12990],['Стейк из лосося по-аргентински',15660]]},
-{name:'Блюда на компанию',items:[['Запечённая сёмга целиком',139990],['Мясо барашка с картофелем',44990],['Томлёные рёбра говядины',44990],['Запечённая ножка ягнёнка',48990],['Мясное плато на гриле (до 15 чел)',49990],['Рыбное плато на гриле',59990]]},
-{name:'Закуски',items:[['Нарезка с оливками',3940],['Попкорн из курицы',6790],['Судак по-китайски',7960],['Соте из баклажанов',5990],['Соте из кабачков',7990],['Сырное плато',12960],['Мясная нарезка',12960],['Ассорти из копчёной рыбы',12960],['Ассорти из жареной рыбы',19690],['Пивные креветки',6990]]},
-{name:'Шашлыки',items:[['Шашлык сет Light',35000],['Шашлык сет Hard',60000],['Шашлык утка',3800],['Шашлык шампиньоны',2500],['Шашлык говядина',5000],['Шашлык из куриного филе',3500],['Шашлык баранина',4500],['Люля куриный',3500],['Люля баранина',3800],['Крылышки',3500]]},
-{name:'Гарниры',items:[['Рис',1290],['Пюре',1290],['Картофель фри',1690],['Брокколи с цветной капустой',1690],['Картофельные дольки',1790],['Овощи на гриле',2590],['Картофель по-домашнему',2890]]},
-{name:'Соусы',items:[['Демигласс',690],['Сырный',690],['Кетчуп',690],['Барбекю',690],['Сливочно-грибной',690]]},
-{name:'Пивные сеты',items:[['Set 1',6990],['Set 2',8990],['Set VIP',11990]]}
-]},
-kz:{categories:[{name:'Мәзір',items:[]}]} };
+/* ДАННЫЕ: КУХНЯ + БАР */
+const DATA = {
+  ru: {
+    food: [
+      { name:'Супы', items:[
+        ['Крем-суп из чечевицы', 2260],
+        ['Рамен с курицей', 4660],
+        ['Рамен с говядиной', 5990],
+        ['Том ям с морепродуктами', 5990],
+      ]},
+      { name:'Салаты', items:[
+        ['Салат с карамелизированной грушей и грецким орехом', 4560],
+        ['Салат с манго', 4860],
+        ['Салат «Баварский»', 4960],
+        ['Хрустящие баклажаны', 4990],
+        ['Цезарь с цыплёнком', 5690],
+        ['Цезарь с креветками', 5690],
+        ['Цезарь с лососем', 5690],
+        ['Тёплый салат с лососем', 5990],
+        ['Салат с говядиной', 5990],
+        ['Салат с рукколой и креветками', 6290],
+        ['Салат с ростбифом', 5990],
+        ['Салат с моцареллой, авокадо и халуми', 5600],
+        ['Оливье с сёмгой', 4400],
+      ]},
+      { name:'Вторые блюда', items:[
+        ['Печень с грибами', 4400],
+        ['Бефстроганов из телятины', 8660],
+        ['Сибас', 10990],
+        ['Дорадо', 10990],
+        ['Филе миньон', 11990],
+        ['Стейк Рибай', 12660],
+        ['Стейк Ти-Бон', 12990],
+        ['Стейк из лосося по-аргентински', 15660],
+      ]},
+      { name:'Блюда на компанию', items:[
+        ['Запечённая сёмга целиком', 139990],
+        ['Мясо барашка с картофелем', 44990],
+        ['Томлёные рёбра говядины', 44990],
+        ['Запечённая ножка ягнёнка (до 15 чел)', 48990],
+        ['Мясное плато на гриле (до 15 чел)', 49990],
+        ['Рыбное плато на гриле', 59990],
+      ]},
+      { name:'Закуски', items:[
+        ['Нарезка с оливками', 3940],
+        ['Попкорн из курицы', 6790],
+        ['Судак по-китайски', 7960],
+        ['Соте из баклажанов', 5990],
+        ['Соте из кабачков', 7990],
+        ['Сырное плато', 12960],
+        ['Мясная нарезка', 12960],
+        ['Ассорти из копчёной рыбы', 12960],
+        ['Ассорти из жареной рыбы', 19690],
+        ['Пивные креветки', 6990],
+      ]},
+      { name:'Шашлыки', items:[
+        ['Шашлыки сет Light', 35000],
+        ['Шашлыки сет Hard', 60000],
+        ['Шашлык утка', 3800],
+        ['Шашлык шампиньоны', 2500],
+        ['Шашлык говядина', 5000],
+        ['Шашлык из куриного филе', 3500],
+        ['Шашлык баранина', 4500],
+        ['Овощи на гриле', 2500],
+        ['Люля куриный', 3500],
+        ['Люля баранина', 3800],
+        ['Крылышки', 3500],
+      ]},
+      { name:'Гарниры', items:[
+        ['Рис', 1290],
+        ['Пюре', 1290],
+        ['Картофель фри', 1690],
+        ['Брокколи с цветной капустой', 1690],
+        ['Картофельные дольки', 1790],
+        ['Овощи на гриле', 2590],
+        ['Картофель по-домашнему', 2890],
+      ]},
+      { name:'Соусы', items:[
+        ['Демигласс', 690],
+        ['Сырный', 690],
+        ['Кетчуп', 690],
+        ['Барбекю', 690],
+        ['Сливочно-грибной', 690],
+      ]},
+      { name:'Пивные сеты', items:[
+        ['SET 1', 6990],
+        ['SET 2', 8990],
+        ['SET VIP', 11990],
+      ]},
+    ],
+    bar: [
+      { name:'Безалкогольные напитки', items:[
+        ['ASSU', 1290],
+        ['Cola', 1590],
+        ['Schweppes', 1590],
+        ['Сок в ассортименте', 2590],
+      ]},
+      { name:'Авторские чаи', items:[
+        ['Black tea', 2490],
+        ['Green tea', 2490],
+        ['Tashkent’s tea', 3490],
+        ['Moroccan tea', 3490],
+        ['Tea of wild berries', 3490],
+      ]},
+      { name:'Лимонады', items:[
+        ['Mango – Passion Fruit', 3990],
+        ['Raspberry', 3990],
+        ['Pomegranate', 3990],
+        ['Kiwi – Lime', 3990],
+        ['Watermelon – Melon', 3990],
+      ]},
+      { name:'Коктейли', items:[
+        ['Long Island Ice Tea', 4000],
+        ['Aperol Sprite', 3800],
+        ['Gin Tonic', 3900],
+        ['Autograph Special', 3800],
+      ]},
+      { name:'Водка', items:[
+        ['Absolute Blue', 2690],
+        ['Gray Goose', 3290],
+        ['Beluga', 3290],
+        ['Belvedere', 3500],
+      ]},
+      { name:'Настойка', items:[
+        ['Jägermeister', 2890],
+      ]},
+      { name:'Вино', items:[
+        ['Casasole', 19990],
+        ['San Valentin', 23990],
+        ['Nuala', 33990],
+        ['Jacobs Creek', 14990],
+      ]},
+      { name:'Вермуты', items:[
+        ['Martini Bianco', 2290],
+        ['Martini Rosso', 2290],
+        ['Martini Extra Dry', 2290],
+      ]},
+      { name:'Купажированный ирландский виски', items:[
+        ['Jameson Original', 2790],
+        ['Jameson IPA', 2690],
+        ['Jameson Black Barrel', 2790],
+        ['Jack Daniel’s', 2990],
+        ['Jim Beam', 2990],
+        ['Chivas Regal 12 y.o', 3990],
+        ['Chivas Regal 18 y.o', 7690],
+        ['Ballantine’s Finest', 2390],
+      ]},
+      { name:'Виски односолодовые', items:[
+        ['The Glenlivet 12 y.o', 4990],
+        ['The Glenlivet 18 y.o', 6990],
+        ['Glenfiddich 12 y.o', 4790],
+        ['Macallan 12 y.o', 7690],
+        ['Macallan 18 y.o', 11990],
+      ]},
+      { name:'Ром', items:[
+        ['Bacardi Oakheart', 2890],
+        ['Bacardi Carta Blanca', 2890],
+        ['Bacardi Carta Negra', 2890],
+        ['Bacardi Spiced', 2890],
+      ]},
+      { name:'Джин', items:[
+        ['Beefeater', 2490],
+        ['Beefeater Blackberry', 2800],
+        ['Beefeater Blood Orange', 3000],
+        ['Beefeater Pink Blackberry', 2800],
+      ]},
+      { name:'Текила', items:[
+        ['Olmeca Blanco', 2590],
+        ['Olmeca Gold', 2590],
+        ['Bombey', 2790],
+      ]},
+      { name:'Коньяк', items:[
+        ['Ararat 5 y.o', 2890],
+        ['Ararat Ahn 7 y.o', 3990],
+        ['Ararat Akhtamar 10 y.o', 3890],
+        ['Hennessy VS', 3990],
+        ['Hennessy VSOP', 5890],
+        ['Hennessy XO', 11990],
+      ]},
+      { name:'Пиво бутылочное', items:[
+        ['Corona Extra', 2790],
+        ['Miller', 2590],
+        ['Heineken', 2590],
+      ]},
+      { name:'Игристые вина', items:[
+        ['Santo Stefano', 17000],
+        ['Martini Asti', 19000],
+        ['Martini Prosecco', 19000],
+        ['Moët & Chandon Imperial', 116000],
+        ['Moët Chandon Rosé', 96000],
+        ['Bottega Prosecco', 29000],
+      ]},
+    ]
+  },
 
-let lang='ru';
-let cart={};
+  // KZ: если хочешь — переведу красиво 100% (сейчас оставил RU названия, чтобы было без ошибок)
+  kz: null
+};
 
-function render(){const m=document.getElementById('menu');m.innerHTML='';data[lang].categories.forEach(c=>{const d=document.createElement('div');d.className='category';d.innerHTML=`<h2>${c.name}</h2>`;c.items.forEach(i=>{const it=document.createElement('div');it.className='item';it.innerHTML=`<span>${i[0]} — ${i[1]} ₸</span><div class='controls'><button onclick="add('${i[0]}',${i[1]})">+</button><button onclick="removeItem('${i[0]}',${i[1]})">−</button></div>`;d.appendChild(it);});m.appendChild(d);});updateCart();}
+/* ЛОГИКА */
+let lang = 'ru';
+let section = 'all'; // all | food | bar
+let cart = {}; // key: name | {price, qty}
 
-function add(n,p){cart[n]?cart[n].qty++:cart[n]={price:p,qty:1};updateCart();}
-function removeItem(n){if(cart[n]){cart[n].qty--;if(cart[n].qty<=0)delete cart[n];}updateCart();}
-function clearCart(){cart={};updateCart();}
+function setLang(l){
+  lang = l;
+  document.getElementById('ruBtn').classList.toggle('active', l==='ru');
+  document.getElementById('kzBtn').classList.toggle('active', l==='kz');
+  // пока kz = ru (чтобы точно работало). Скажешь — сделаю 100% перевод.
+  render();
+  updateCart();
+}
 
-function updateCart(){let sum=0;let list='';for(let k in cart){let i=cart[k];sum+=i.price*i.qty;list+=`${k} x${i.qty}<br>`;}let service=Math.round(sum*0.1);document.getElementById('cartItems').innerHTML=list?list:'Корзина пуста';document.getElementById('total').innerText=`${lang==='ru'?'Итого':'Барлығы'}: ${sum+service} ₸ (вкл. 10%)`;}
+function setSection(s){
+  section = s;
+  document.getElementById('tabAll').classList.toggle('active', s==='all');
+  document.getElementById('tabFood').classList.toggle('active', s==='food');
+  document.getElementById('tabBar').classList.toggle('active', s==='bar');
+  render();
+}
 
-function setLang(l){lang=l;clearCart();render();}
+function add(name, price){
+  if(!cart[name]) cart[name] = {price, qty:0};
+  cart[name].qty++;
+  updateCart();
+}
+
+function sub(name){
+  if(!cart[name]) return;
+  cart[name].qty--;
+  if(cart[name].qty<=0) delete cart[name];
+  updateCart();
+}
+
+function clearCart(){
+  cart = {};
+  updateCart();
+}
+
+function fmt(n){
+  return (n||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+}
+
+function currentData(){
+  // если kz не заполнен — используем ru, чтобы не было пустоты
+  return (lang==='kz' && DATA.kz) ? DATA.kz : DATA.ru;
+}
+
+function render(){
+  const q = (document.getElementById('q').value || '').trim().toLowerCase();
+  const root = document.getElementById('menu');
+  root.innerHTML = '';
+
+  const d = currentData();
+  const blocks = [];
+  if(section==='all' || section==='food') blocks.push(...d.food.map(c=>({group:'food',...c})));
+  if(section==='all' || section==='bar')  blocks.push(...d.bar.map(c=>({group:'bar',...c})));
+
+  blocks.forEach(cat=>{
+    // фильтр по поиску
+    const items = cat.items.filter(([n]) => !q || n.toLowerCase().includes(q));
+    if(items.length===0) return;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'category';
+    wrap.innerHTML = `<h2>${cat.name}</h2>`;
+
+    items.forEach(([name, price])=>{
+      const row = document.createElement('div');
+      row.className = 'item';
+      const qty = cart[name]?.qty || 0;
+
+      row.innerHTML = `
+        <div class="iname">
+          ${name}
+          <span class="iprice">${fmt(price)} ₸</span>
+        </div>
+        <div class="controls">
+          <button class="btn" onclick="sub(${JSON.stringify(name)})">−</button>
+          <div class="qty">${qty}</div>
+          <button class="btn" onclick="add(${JSON.stringify(name)}, ${price})">+</button>
+        </div>
+      `;
+      wrap.appendChild(row);
+    });
+
+    root.appendChild(wrap);
+  });
+
+  // подписи
+  document.getElementById('cartTitle').textContent = (lang==='ru') ? 'Выбрано:' : 'Таңдалғаны:';
+  document.getElementById('svcLabel').textContent = (lang==='ru') ? 'Сервис 10%' : 'Қызмет 10%';
+  document.getElementById('clearBtn').textContent = (lang==='ru') ? 'Очистить' : 'Тазалау';
+  document.getElementById('waiterBtn').textContent = (lang==='ru') ? 'Показать официанту' : 'Официантқа көрсету';
+}
+
+function updateCart(){
+  const listEl = document.getElementById('cartItems');
+
+  const entries = Object.entries(cart);
+  if(entries.length===0){
+    listEl.innerHTML = (lang==='ru') ? 'Корзина пуста' : 'Себет бос';
+    document.getElementById('total').textContent = (lang==='ru') ? 'Итого: 0 ₸' : 'Барлығы: 0 ₸';
+    document.getElementById('breakdown').textContent = '';
+    // обновим счетчики в меню
+    render();
+    return;
+  }
+
+  let sum = 0;
+  let html = '';
+  entries.forEach(([name, it])=>{
+    const line = it.price * it.qty;
+    sum += line;
+    html += `${name} ×${it.qty} — ${fmt(line)} ₸<br>`;
+  });
+
+  const svcOn = document.getElementById('svc').checked;
+  const svc = svcOn ? Math.round(sum * 0.10) : 0;
+  const total = sum + svc;
+
+  listEl.innerHTML = html;
+  document.getElementById('total').textContent =
+    (lang==='ru') ? `Итого: ${fmt(total)} ₸` : `Барлығы: ${fmt(total)} ₸`;
+
+  document.getElementById('breakdown').textContent =
+    svcOn ? ((lang==='ru') ? `Сумма: ${fmt(sum)} ₸ + сервис 10%: ${fmt(svc)} ₸` : `Сома: ${fmt(sum)} ₸ + қызмет 10%: ${fmt(svc)} ₸`)
+          : ((lang==='ru') ? `Сумма: ${fmt(sum)} ₸ (сервис выключен)` : `Сома: ${fmt(sum)} ₸ (қызмет өшірулі)`);
+
+  // перерисуем меню, чтобы qty обновились
+  render();
+}
+
+function showWaiter(){
+  const entries = Object.entries(cart);
+  if(entries.length===0){ return; }
+
+  const svcOn = document.getElementById('svc').checked;
+  let sum = 0;
+  let text = 'AUTOGRAPH — заказ\\n\\n';
+
+  entries.forEach(([name, it])=>{
+    const line = it.price * it.qty;
+    sum += line;
+    text += `• ${name} ×${it.qty} — ${fmt(line)} ₸\\n`;
+  });
+
+  const svc = svcOn ? Math.round(sum * 0.10) : 0;
+  const total = sum + svc;
+
+  text += `\\nСумма: ${fmt(sum)} ₸\\n`;
+  text += svcOn ? `Сервис 10%: ${fmt(svc)} ₸\\n` : `Сервис: выключен\\n`;
+  text += `ИТОГО: ${fmt(total)} ₸\\n`;
+  text += `\\nОбслуживание: 10%`;
+
+  document.getElementById('orderText').textContent = text;
+  document.getElementById('mb').style.display = 'flex';
+}
+
+function hideModal(){
+  document.getElementById('mb').style.display = 'none';
+}
+
+async function copyOrder(){
+  const t = document.getElementById('orderText').textContent;
+  try{
+    await navigator.clipboard.writeText(t);
+    alert('Скопировано ✅');
+  }catch(e){
+    alert('Не получилось скопировать. Выдели текст и скопируй вручную.');
+  }
+}
+
+// старт
 render();
+updateCart();
 </script>
 </body>
 </html>
