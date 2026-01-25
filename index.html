@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Autograph Karaoke Menu</title>
+  <style>
+    body {margin:0;font-family:Arial,Helvetica,sans-serif;background:#0b0b0b;color:#f5f5f5;}
+    header {padding:20px;text-align:center;border-bottom:2px solid #bfa46a;}
+    h1 {margin:0;letter-spacing:4px;color:#bfa46a;}
+    .lang button {margin:6px;padding:6px 12px;background:#000;color:#bfa46a;border:1px solid #bfa46a;border-radius:6px;cursor:pointer;}
+    .container {padding:20px;max-width:900px;margin:auto;}
+    .category {margin-top:40px;}
+    .category h2 {border-bottom:1px solid #bfa46a;padding-bottom:6px;color:#bfa46a;}
+    .item {display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed #333;}
+    .controls button {margin:0 4px;padding:4px 10px;}
+    .cart {position:fixed;bottom:0;left:0;right:0;background:#111;padding:15px;border-top:2px solid #bfa46a;}
+    .cart-items {font-size:14px;margin-bottom:6px;}
+    .total {font-size:18px;font-weight:bold;color:#bfa46a;}
+    .clear {float:right;background:#300;color:#fff;border:none;padding:6px 10px;border-radius:6px;}
+  </style>
+</head>
+<body>
+<header>
+  <h1>AUTOGRAPH</h1>
+  <div class="lang">
+    <button onclick="setLang('ru')">RU</button>
+    <button onclick="setLang('kz')">KZ</button>
+  </div>
+</header>
+
+<div class="container" id="menu"></div>
+
+<div class="cart">
+  <div class="cart-items" id="cartItems"></div>
+  <span class="total" id="total">Итого: 0 ₸</span>
+  <button class="clear" onclick="clearCart()">Очистить</button>
+</div>
+
+<script>
+const data = {
+ru:{categories:[
+{name:'Супы',items:[['Крем-суп из чечевицы',2260],['Рамен с курицей',4660],['Рамен с говядиной',5990],['Том ям с морепродуктами',5990]]},
+{name:'Салаты',items:[['Салат с карамелизированной грушей и грецким орехом',4560],['Салат с манго',4860],['Салат "Баварский"',4960],['Хрустящие баклажаны',4990],['Цезарь с цыплёнком',5690],['Цезарь с креветками',5690],['Цезарь с лососем',5690],['Тёплый салат с лососем',5990],['Салат с говядиной',5990],['Салат с рукколой и креветками',6290],['Салат с ростбифом',5990],['Салат с моцареллой, авокадо и халуми',5600],['Оливье с сёмгой',4400]]},
+{name:'Вторые блюда',items:[['Печень с грибами',4400],['Бефстроганов из телятины',8660],['Сибас',10990],['Дорадо',10990],['Филе миньон',11990],['Стейк Рибай',12660],['Стейк Ти-Бон',12990],['Стейк из лосося по-аргентински',15660]]},
+{name:'Блюда на компанию',items:[['Запечённая сёмга целиком',139990],['Мясо барашка с картофелем',44990],['Томлёные рёбра говядины',44990],['Запечённая ножка ягнёнка',48990],['Мясное плато на гриле (до 15 чел)',49990],['Рыбное плато на гриле',59990]]},
+{name:'Закуски',items:[['Нарезка с оливками',3940],['Попкорн из курицы',6790],['Судак по-китайски',7960],['Соте из баклажанов',5990],['Соте из кабачков',7990],['Сырное плато',12960],['Мясная нарезка',12960],['Ассорти из копчёной рыбы',12960],['Ассорти из жареной рыбы',19690],['Пивные креветки',6990]]},
+{name:'Шашлыки',items:[['Шашлык сет Light',35000],['Шашлык сет Hard',60000],['Шашлык утка',3800],['Шашлык шампиньоны',2500],['Шашлык говядина',5000],['Шашлык из куриного филе',3500],['Шашлык баранина',4500],['Люля куриный',3500],['Люля баранина',3800],['Крылышки',3500]]},
+{name:'Гарниры',items:[['Рис',1290],['Пюре',1290],['Картофель фри',1690],['Брокколи с цветной капустой',1690],['Картофельные дольки',1790],['Овощи на гриле',2590],['Картофель по-домашнему',2890]]},
+{name:'Соусы',items:[['Демигласс',690],['Сырный',690],['Кетчуп',690],['Барбекю',690],['Сливочно-грибной',690]]},
+{name:'Пивные сеты',items:[['Set 1',6990],['Set 2',8990],['Set VIP',11990]]}
+]},
+kz:{categories:[{name:'Мәзір',items:[]}]} };
+
+let lang='ru';
+let cart={};
+
+function render(){const m=document.getElementById('menu');m.innerHTML='';data[lang].categories.forEach(c=>{const d=document.createElement('div');d.className='category';d.innerHTML=`<h2>${c.name}</h2>`;c.items.forEach(i=>{const it=document.createElement('div');it.className='item';it.innerHTML=`<span>${i[0]} — ${i[1]} ₸</span><div class='controls'><button onclick="add('${i[0]}',${i[1]})">+</button><button onclick="removeItem('${i[0]}',${i[1]})">−</button></div>`;d.appendChild(it);});m.appendChild(d);});updateCart();}
+
+function add(n,p){cart[n]?cart[n].qty++:cart[n]={price:p,qty:1};updateCart();}
+function removeItem(n){if(cart[n]){cart[n].qty--;if(cart[n].qty<=0)delete cart[n];}updateCart();}
+function clearCart(){cart={};updateCart();}
+
+function updateCart(){let sum=0;let list='';for(let k in cart){let i=cart[k];sum+=i.price*i.qty;list+=`${k} x${i.qty}<br>`;}let service=Math.round(sum*0.1);document.getElementById('cartItems').innerHTML=list?list:'Корзина пуста';document.getElementById('total').innerText=`${lang==='ru'?'Итого':'Барлығы'}: ${sum+service} ₸ (вкл. 10%)`;}
+
+function setLang(l){lang=l;clearCart();render();}
+render();
+</script>
+</body>
+</html>
