@@ -1,72 +1,62 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Autograph Gold — QR Menu</title>
   <style>
-    :root{
-      --bg:#0b0b0b; --panel:#111; --gold:#bfa46a; --text:#f5f5f5; --muted:#bdbdbd; --line:#2a2a2a;
-    }
+    :root{--bg:#0b0b0b;--gold:#c9b27c;--text:#f5f5f5;--muted:#bdbdbd;--line:#2a2a2a}
     *{box-sizing:border-box}
     body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
-    header{padding:18px 14px;text-align:center;border-bottom:2px solid var(--gold)}
+    header{padding:16px 14px;text-align:center;border-bottom:2px solid var(--gold)}
     h1{margin:0;letter-spacing:3px;color:var(--gold);font-size:22px}
-    .topbar{display:flex;gap:10px;justify-content:center;align-items:center;margin-top:10px;flex-wrap:wrap}
-    .chip{border:1px solid var(--gold);color:var(--gold);background:#000;padding:6px 10px;border-radius:10px;cursor:pointer}
-    .chip.active{background:var(--gold);color:#0b0b0b;font-weight:800}
-
-    .wrap{max-width:980px;margin:0 auto;padding:16px 14px 160px}
-    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:10px 0 16px}
-    .search{flex:1;min-width:220px;max-width:520px;background:#0f0f0f;border:1px solid var(--line);color:var(--text);
-      padding:10px 12px;border-radius:12px;outline:none}
+    .top{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:10px}
+    .chip{border:1px solid var(--gold);background:#000;color:var(--gold);padding:6px 10px;border-radius:10px;cursor:pointer;font-weight:700}
+    .chip.active{background:var(--gold);color:#000}
+    .wrap{max-width:980px;margin:0 auto;padding:16px 14px 170px}
+    .toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:8px 0 14px}
+    .search{flex:1;min-width:220px;max-width:520px;background:#0f0f0f;border:1px solid var(--line);color:var(--text);padding:10px 12px;border-radius:12px;outline:none}
     .tabs{display:flex;gap:8px;flex-wrap:wrap}
-    .tab{border:1px solid var(--gold);background:transparent;color:var(--gold);padding:8px 10px;border-radius:12px;cursor:pointer}
-    .tab.active{background:var(--gold);color:#0b0b0b;font-weight:800}
-
+    .tab{border:1px solid var(--gold);background:transparent;color:var(--gold);padding:8px 10px;border-radius:12px;cursor:pointer;font-weight:700}
+    .tab.active{background:var(--gold);color:#000}
     .category{margin:22px 0}
-    .category h2{margin:0 0 10px;color:var(--gold);font-size:18px;border-bottom:1px solid var(--gold);padding-bottom:6px}
-
-    .item{display:flex;gap:10px;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)}
+    .category h2{margin:0 0 10px;color:var(--gold);border-bottom:1px solid var(--gold);padding-bottom:6px;font-size:18px}
+    .item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line)}
     .iname{font-size:14px;line-height:1.25}
     .iprice{color:var(--muted);font-size:13px;margin-left:8px;white-space:nowrap}
     .controls{display:flex;align-items:center;gap:8px;flex-shrink:0}
-    .btn{width:34px;height:34px;border-radius:10px;border:1px solid var(--gold);background:transparent;color:var(--gold);font-size:18px;cursor:pointer}
-    .qty{min-width:18px;text-align:center;font-weight:800;color:var(--text)}
+    .btn{width:34px;height:34px;border-radius:10px;border:1px solid var(--gold);background:#000;color:var(--gold);font-size:18px;cursor:pointer}
+    .qty{min-width:18px;text-align:center;font-weight:900}
 
-    .cart{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(180deg, rgba(17,17,17,.92), rgba(17,17,17,.98));
-      border-top:2px solid var(--gold);padding:12px 14px;backdrop-filter: blur(6px)}
+    .cart{position:fixed;left:0;right:0;bottom:0;background:rgba(17,17,17,.96);border-top:2px solid var(--gold);padding:12px 14px;backdrop-filter:blur(6px)}
     .cart-inner{max-width:980px;margin:0 auto;display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
     .cart-left{min-width:240px;flex:1}
     .cart-title{color:var(--muted);font-size:12px;margin-bottom:6px}
     .cart-items{font-size:13px;line-height:1.35;max-height:90px;overflow:auto;padding-right:6px}
-
     .cart-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-    .total{font-size:16px;font-weight:900;color:var(--gold)}
-    .small{font-size:12px;color:var(--muted)}
-
-    .action{border:none;border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:800}
+    .total{color:var(--gold);font-size:16px;font-weight:900}
+    .small{color:var(--muted);font-size:12px}
+    .svc{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}
+    .svc input{transform:scale(1.1)}
+    .action{padding:10px 12px;border-radius:12px;border:none;font-weight:900;cursor:pointer}
     .clear{background:#3a0b0b;color:#fff}
-    .send{background:var(--gold);color:#0b0b0b}
     .copy{background:#1a1a1a;color:var(--gold);border:1px solid var(--gold)}
-    .svc-toggle{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}
-    .svc-toggle input{transform:scale(1.1)}
+    .send{background:var(--gold);color:#000}
 
-    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;padding:14px}
+    .mb{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;padding:14px}
     .modal{max-width:560px;width:100%;background:#0f0f0f;border:1px solid var(--gold);border-radius:16px;padding:14px}
     .modal h3{margin:0 0 10px;color:var(--gold);letter-spacing:1px}
-    .modal pre{white-space:pre-wrap;word-break:break-word;background:#0b0b0b;border:1px solid var(--line);
-      border-radius:12px;padding:10px;color:var(--text);font-size:13px}
-    .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap}
+    .modal pre{white-space:pre-wrap;word-break:break-word;background:#0b0b0b;border:1px solid var(--line);border-radius:12px;padding:10px;color:var(--text);font-size:13px}
+    .m-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:10px}
     .close{background:#222;color:#fff;border:1px solid #444}
   </style>
 </head>
 <body>
   <header>
     <h1>AUTOGRAPH GOLD</h1>
-    <div class="topbar">
-      <button class="chip active" id="ruBtn" data-lang="ru">RU</button>
-      <button class="chip" id="kzBtn" data-lang="kz">KZ</button>
+    <div class="top">
+      <button class="chip active" data-lang="ru">RU</button>
+      <button class="chip" data-lang="kz">KZ</button>
     </div>
   </header>
 
@@ -74,12 +64,11 @@
     <div class="toolbar">
       <input id="q" class="search" placeholder="Поиск по меню..." />
       <div class="tabs">
-        <button class="tab active" id="tabAll" data-section="all">Всё</button>
-        <button class="tab" id="tabFood" data-section="food">Кухня</button>
-        <button class="tab" id="tabBar" data-section="bar">Бар</button>
+        <button class="tab active" data-section="all">Всё</button>
+        <button class="tab" data-section="food">Кухня</button>
+        <button class="tab" data-section="bar">Бар</button>
       </div>
     </div>
-
     <div id="menu"></div>
   </div>
 
@@ -89,569 +78,322 @@
         <div class="cart-title" id="cartTitle">Выбрано:</div>
         <div class="cart-items" id="cartItems">Корзина пуста</div>
       </div>
-
       <div class="cart-right">
-        <label class="svc-toggle">
-          <input type="checkbox" id="svc" checked />
-          <span id="svcLabel">Сервис 10%</span>
-        </label>
-
+        <label class="svc"><input id="svc" type="checkbox" checked /> <span id="svcLabel">Сервис 10%</span></label>
         <div>
           <div class="total" id="total">Итого: 0 ₸</div>
           <div class="small" id="breakdown"></div>
         </div>
-
         <button class="action clear" id="clearBtn">Очистить</button>
-        <button class="action copy" id="copyBtn">Скопировать</button>
+        <button class="action copy" id="copyBtn">Показать заказ</button>
         <button class="action send" id="sendBtn">Отправить на WhatsApp</button>
       </div>
     </div>
   </div>
 
-  <div class="modal-backdrop" id="mb">
+  <div class="mb" id="mb">
     <div class="modal">
-      <h3 id="modalTitle">Заказ</h3>
+      <h3 id="mTitle">Заказ</h3>
       <pre id="orderText"></pre>
-      <div class="modal-actions">
-        <button class="action copy" id="modalCopy">Скопировать</button>
-        <button class="action close" id="modalClose">Закрыть</button>
+      <div class="m-actions">
+        <button class="action copy" id="mCopy">Скопировать</button>
+        <button class="action close" id="mClose">Закрыть</button>
       </div>
     </div>
   </div>
 
 <script>
-/* ========= ДАННЫЕ ========= */
-const PHONE_WA = "77777785757"; // +7 (777) 778-57-57 -> wa.me без + и пробелов
+  const WA_PHONE = '77777785757';
 
-const DATA = {
-  ru: {
-    ui: {
-      search:"Поиск по меню...", all:"Всё", food:"Кухня", bar:"Бар",
-      picked:"Выбрано:", empty:"Корзина пуста", total:"Итого",
-      svc:"Сервис 10%", clear:"Очистить", copy:"Скопировать", send:"Отправить на WhatsApp",
-      sum:"Сумма", svcLine:"сервис 10%", svcOff:"сервис выключен",
-      modalTitle:"Заказ", copied:"Скопировано ✅"
+  const DATA = {
+    ru: {
+      ui: {
+        search:'Поиск по меню...', all:'Всё', food:'Кухня', bar:'Бар',
+        picked:'Выбрано:', empty:'Корзина пуста', total:'Итого',
+        svc:'Сервис 10%', clear:'Очистить', show:'Показать заказ', send:'Отправить на WhatsApp',
+        sum:'Сумма', svcLine:'сервис 10%', svcOff:'сервис выключен',
+        modal:'Заказ', copied:'Скопировано ✅'
+      },
+      food: [
+        { name:'Супы', items:[
+          ['Крем-суп из чечевицы',2260],['Рамен с курицей',4660],['Рамен с говядиной',5990],['Том ям с морепродуктами',5990]
+        ]},
+        { name:'Салаты', items:[
+          ['Салат с карамелизированной грушей и грецким орехом',4560],['Салат с манго',4860],['Салат «Баварский»',4960],['Хрустящие баклажаны',4990],
+          ['Цезарь с цыплёнком',5690],['Цезарь с креветками',5690],['Цезарь с лососем',5690],['Тёплый салат с лососем',5990],
+          ['Салат с говядиной',5990],['Салат с рукколой и креветками',6290],['Салат с ростбифом',5990],['Салат с моцареллой, авокадо и халуми',5600],['Оливье с сёмгой',4400]
+        ]},
+        { name:'Блюда на компанию', items:[
+          ['Запечённая сёмга целиком',139990],['Мясо барашка с картофелем',44990],['Томлёные рёбра говядины',44990],
+          ['Запечённая ножка ягнёнка (до 15 чел)',48990],['Мясное плато на гриле (до 15 чел)',49990],['Рыбное плато на гриле',59990]
+        ]},
+        { name:'Вторые блюда', items:[
+          ['Печень с грибами',4400],['Бефстроганов из телятины',8660],['Сибас',10990],['Дорадо',10990],
+          ['Филе миньон',11990],['Стейк Рибай',12660],['Стейк Ти-Бон',12990],['Стейк из лосося по-аргентински',15660]
+        ]},
+        { name:'Закуски', items:[
+          ['Нарезка с оливками',3940],['Попкорн из курицы',6790],['Судак по-китайски',7960],['Соте из баклажанов',5990],['Соте из кабачков',7990],
+          ['Сырное плато',12960],['Мясная нарезка',12960],['Ассорти из копчёной рыбы',12960],['Ассорти из жареной рыбы',19690],['Пивные креветки',6990]
+        ]},
+        { name:'Шашлыки', items:[
+          ['Шашлыки сет Light',35000],['Шашлыки сет Hard',60000],['Шашлык утка',3800],['Шашлык шампиньоны',2500],['Шашлык говядина',5000],
+          ['Шашлык из куриного филе',3500],['Шашлык баранина',4500],['Овощи на гриле',2500],['Люля куриный',3500],['Люля баранина',3800],['Крылышки',3500]
+        ]},
+        { name:'Гарниры', items:[
+          ['Рис',1290],['Пюре',1290],['Картофель фри',1690],['Брокколи с цветной капустой',1690],['Картофельные дольки',1790],['Овощи на гриле',2590],['Картофель по-домашнему',2890]
+        ]},
+        { name:'Соусы', items:[['Демигласс',690],['Сырный',690],['Кетчуп',690],['Барбекю',690],['Сливочно-грибной',690]]},
+        { name:'Пивные сеты', items:[['SET 1',6990],['SET 2',8990],['SET VIP',11990]]}
+      ],
+      bar: [
+        { name:'Безалкогольные напитки', items:[['ASSU',1290],['Cola',1590],['Schweppes',1590],['Сок в ассортименте',2590]]},
+        { name:'Авторские чаи', items:[['Black tea',2490],['Green tea',2490],['Tashkent’s tea',3490],['Moroccan tea',3490],['Tea of wild berries',3490]]},
+        { name:'Лимонады', items:[['Mango – Passion Fruit',3990],['Raspberry',3990],['Pomegranate',3990],['Kiwi – Lime',3990],['Watermelon – Melon',3990]]},
+        { name:'Коктейли', items:[['Long Island Ice Tea',4000],['Aperol Sprite',3800],['Gin Tonic',3900],['Autograph Special',3800]]},
+        { name:'Водка', items:[['Absolute Blue',2690],['Gray Goose',3290],['Beluga',3290],['Belvedere',3500]]},
+        { name:'Настойка', items:[['Jägermeister',2890]]},
+        { name:'Вино', items:[['Casasole',19990],['San Valentin',23990],['Nuala',33990],['Jacobs Creek',14990]]},
+        { name:'Вермуты', items:[['Martini Bianco',2290],['Martini Rosso',2290],['Martini Extra Dry',2290]]},
+        { name:'Купажированный ирландский виски', items:[['Jameson Original',2790],['Jameson IPA',2690],['Jameson Black Barrel',2790],['Jack Daniel’s',2990],['Jim Beam',2990],['Chivas Regal 12 y.o',3990],['Chivas Regal 18 y.o',7690],['Ballantine’s Finest',2390]]},
+        { name:'Виски односолодовые', items:[['The Glenlivet 12 y.o',4990],['The Glenlivet 18 y.o',6990],['Glenfiddich 12 y.o',4790],['Macallan 12 y.o',7690],['Macallan 18 y.o',11990]]},
+        { name:'Ром', items:[['Bacardi Oakheart',2890],['Bacardi Carta Blanca',2890],['Bacardi Carta Negra',2890],['Bacardi Spiced',2890]]},
+        { name:'Джин', items:[['Beefeater',2490],['Beefeater Blackberry',2800],['Beefeater Blood Orange',3000],['Beefeater Pink Blackberry',2800]]},
+        { name:'Текила', items:[['Olmeca Blanco',2590],['Olmeca Gold',2590],['Bombey',2790]]},
+        { name:'Коньяк', items:[['Ararat 5 y.o',2890],['Ararat Ahn 7 y.o',3990],['Ararat Akhtamar 10 y.o',3890],['Hennessy VS',3990],['Hennessy VSOP',5890],['Hennessy XO',11990]]},
+        { name:'Пиво бутылочное', items:[['Corona Extra',2790],['Miller',2590],['Heineken',2590]]},
+        { name:'Игристые вина', items:[['Santo Stefano',17000],['Martini Asti',19000],['Martini Prosecco',19000],['Moët & Chandon Imperial',116000],['Moët Chandon Rosé',96000],['Bottega Prosecco',29000]]}
+      ]
     },
-    food: [
-      { name:'Супы', items:[
-        ['Крем-суп из чечевицы', 2260],
-        ['Рамен с курицей', 4660],
-        ['Рамен с говядиной', 5990],
-        ['Том ям с морепродуктами', 5990],
-      ]},
-      { name:'Салаты', items:[
-        ['Салат с карамелизированной грушей и грецким орехом', 4560],
-        ['Салат с манго', 4860],
-        ['Салат «Баварский»', 4960],
-        ['Хрустящие баклажаны', 4990],
-        ['Цезарь с цыплёнком', 5690],
-        ['Цезарь с креветками', 5690],
-        ['Цезарь с лососем', 5690],
-        ['Тёплый салат с лососем', 5990],
-        ['Салат с говядиной', 5990],
-        ['Салат с рукколой и креветками', 6290],
-        ['Салат с ростбифом', 5990],
-        ['Салат с моцареллой, авокадо и халуми', 5600],
-        ['Оливье с сёмгой', 4400],
-      ]},
-      { name:'Вторые блюда', items:[
-        ['Печень с грибами', 4400],
-        ['Бефстроганов из телятины', 8660],
-        ['Сибас', 10990],
-        ['Дорадо', 10990],
-        ['Филе миньон', 11990],
-        ['Стейк Рибай', 12660],
-        ['Стейк Ти-Бон', 12990],
-        ['Стейк из лосося по-аргентински', 15660],
-      ]},
-      { name:'Блюда на компанию', items:[
-        ['Запечённая сёмга целиком', 139990],
-        ['Мясо барашка с картофелем', 44990],
-        ['Томлёные рёбра говядины', 44990],
-        ['Запечённая ножка ягнёнка (до 15 чел)', 48990],
-        ['Мясное плато на гриле (до 15 чел)', 49990],
-        ['Рыбное плато на гриле', 59990],
-      ]},
-      { name:'Закуски', items:[
-        ['Нарезка с оливками', 3940],
-        ['Попкорн из курицы', 6790],
-        ['Судак по-китайски', 7960],
-        ['Соте из баклажанов', 5990],
-        ['Соте из кабачков', 7990],
-        ['Сырное плато', 12960],
-        ['Мясная нарезка', 12960],
-        ['Ассорти из копчёной рыбы', 12960],
-        ['Ассорти из жареной рыбы', 19690],
-        ['Пивные креветки', 6990],
-      ]},
-      { name:'Шашлыки', items:[
-        ['Шашлыки сет Light', 35000],
-        ['Шашлыки сет Hard', 60000],
-        ['Шашлык утка', 3800],
-        ['Шашлык шампиньоны', 2500],
-        ['Шашлык говядина', 5000],
-        ['Шашлык из куриного филе', 3500],
-        ['Шашлык баранина', 4500],
-        ['Овощи на гриле', 2500],
-        ['Люля куриный', 3500],
-        ['Люля баранина', 3800],
-        ['Крылышки', 3500],
-      ]},
-      { name:'Гарниры', items:[
-        ['Рис', 1290],
-        ['Пюре', 1290],
-        ['Картофель фри', 1690],
-        ['Брокколи с цветной капустой', 1690],
-        ['Картофельные дольки', 1790],
-        ['Овощи на гриле', 2590],
-        ['Картофель по-домашнему', 2890],
-      ]},
-      { name:'Соусы', items:[
-        ['Демигласс', 690],
-        ['Сырный', 690],
-        ['Кетчуп', 690],
-        ['Барбекю', 690],
-        ['Сливочно-грибной', 690],
-      ]},
-      { name:'Пивные сеты', items:[
-        ['SET 1', 6990],
-        ['SET 2', 8990],
-        ['SET VIP', 11990],
-      ]},
-    ],
-    bar: [
-      { name:'Безалкогольные напитки', items:[
-        ['ASSU', 1290],
-        ['Cola', 1590],
-        ['Schweppes', 1590],
-        ['Сок в ассортименте', 2590],
-      ]},
-      { name:'Авторские чаи', items:[
-        ['Black tea', 2490],
-        ['Green tea', 2490],
-        ['Tashkent’s tea', 3490],
-        ['Moroccan tea', 3490],
-        ['Tea of wild berries', 3490],
-      ]},
-      { name:'Лимонады', items:[
-        ['Mango – Passion Fruit', 3990],
-        ['Raspberry', 3990],
-        ['Pomegranate', 3990],
-        ['Kiwi – Lime', 3990],
-        ['Watermelon – Melon', 3990],
-      ]},
-      { name:'Коктейли', items:[
-        ['Long Island Ice Tea', 4000],
-        ['Aperol Sprite', 3800],
-        ['Gin Tonic', 3900],
-        ['Autograph Special', 3800],
-      ]},
-      { name:'Водка', items:[
-        ['Absolute Blue', 2690],
-        ['Gray Goose', 3290],
-        ['Beluga', 3290],
-        ['Belvedere', 3500],
-      ]},
-      { name:'Настойка', items:[
-        ['Jägermeister', 2890],
-      ]},
-      { name:'Вино', items:[
-        ['Casasole', 19990],
-        ['San Valentin', 23990],
-        ['Nuala', 33990],
-        ['Jacobs Creek', 14990],
-      ]},
-      { name:'Вермуты', items:[
-        ['Martini Bianco', 2290],
-        ['Martini Rosso', 2290],
-        ['Martini Extra Dry', 2290],
-      ]},
-      { name:'Купажированный ирландский виски', items:[
-        ['Jameson Original', 2790],
-        ['Jameson IPA', 2690],
-        ['Jameson Black Barrel', 2790],
-        ['Jack Daniel’s', 2990],
-        ['Jim Beam', 2990],
-        ['Chivas Regal 12 y.o', 3990],
-        ['Chivas Regal 18 y.o', 7690],
-        ['Ballantine’s Finest', 2390],
-      ]},
-      { name:'Виски односолодовые', items:[
-        ['The Glenlivet 12 y.o', 4990],
-        ['The Glenlivet 18 y.o', 6990],
-        ['Glenfiddich 12 y.o', 4790],
-        ['Macallan 12 y.o', 7690],
-        ['Macallan 18 y.o', 11990],
-      ]},
-      { name:'Ром', items:[
-        ['Bacardi Oakheart', 2890],
-        ['Bacardi Carta Blanca', 2890],
-        ['Bacardi Carta Negra', 2890],
-        ['Bacardi Spiced', 2890],
-      ]},
-      { name:'Джин', items:[
-        ['Beefeater', 2490],
-        ['Beefeater Blackberry', 2800],
-        ['Beefeater Blood Orange', 3000],
-        ['Beefeater Pink Blackberry', 2800],
-      ]},
-      { name:'Текила', items:[
-        ['Olmeca Blanco', 2590],
-        ['Olmeca Gold', 2590],
-        ['Bombey', 2790],
-      ]},
-      { name:'Коньяк', items:[
-        ['Ararat 5 y.o', 2890],
-        ['Ararat Ahn 7 y.o', 3990],
-        ['Ararat Akhtamar 10 y.o', 3890],
-        ['Hennessy VS', 3990],
-        ['Hennessy VSOP', 5890],
-        ['Hennessy XO', 11990],
-      ]},
-      { name:'Пиво бутылочное', items:[
-        ['Corona Extra', 2790],
-        ['Miller', 2590],
-        ['Heineken', 2590],
-      ]},
-      { name:'Игристые вина', items:[
-        ['Santo Stefano', 17000],
-        ['Martini Asti', 19000],
-        ['Martini Prosecco', 19000],
-        ['Moët & Chandon Imperial', 116000],
-        ['Moët Chandon Rosé', 96000],
-        ['Bottega Prosecco', 29000],
-      ]},
-    ]
-  },
+    kz: {
+      ui: {
+        search:'Мәзірден іздеу...', all:'Барлығы', food:'Ас мәзірі', bar:'Бар мәзірі',
+        picked:'Таңдалғаны:', empty:'Себет бос', total:'Барлығы',
+        svc:'Қызмет 10%', clear:'Тазалау', show:'Тапсырысты көрсету', send:'WhatsApp-қа жіберу',
+        sum:'Сома', svcLine:'қызмет 10%', svcOff:'қызмет өшірулі',
+        modal:'Тапсырыс', copied:'Көшірілді ✅'
+      },
+      food: [
+        { name:'Сорпалар', items:[['Жасымық крем-сорпасы',2260],['Тауық қосылған рамен',4660],['Сиыр еті қосылған рамен',5990],['Теңіз өнімдерімен том ям',5990]]},
+        { name:'Салаттар', items:[
+          ['Карамельденген алмұрт және жаңғақ салаты',4560],['Манго салаты',4860],['«Бавариялық» салат',4960],['Қытырлақ баклажан',4990],
+          ['Тауық қосылған Цезарь',5690],['Асшаян қосылған Цезарь',5690],['Албырт қосылған Цезарь',5690],['Жылы албырт салаты',5990],
+          ['Сиыр етінен салат',5990],['Руккола және асшаян салаты',6290],['Ростбиф салаты',5990],['Моцарелла, авокадо және халлуми салаты',5600],['Албырт қосылған оливье',4400]
+        ]},
+        { name:'Компанияға арналған', items:[
+          ['Тұтас пісірілген албырт',139990],['Картоппен қой еті',44990],['Бұқтырылған сиыр қабырғасы',44990],
+          ['Пісірілген қозы жамбасы (15 адамға дейін)',48990],['Грильдегі ет ассорти (15 адамға дейін)',49990],['Грильдегі балық ассорти',59990]
+        ]},
+        { name:'Негізгі тағамдар', items:[['Саңырауқұлақ қосылған бауыр',4400],['Бұзау етінен бефстроганов',8660],['Сибас',10990],['Дорадо',10990],['Филе-миньон',11990],['Рибай стейк',12660],['Ти-Бон стейк',12990],['Аргентиналық тәсілмен албырт стейк',15660]]},
+        { name:'Тіскебасарлар', items:[['Зәйтүн қосылған ассорти',3940],['Тауық попкорны',6790],['Қытайша судак',7960],['Баклажан соте',5990],['Кабачок соте',7990],['Ірімшік табақ',12960],['Ет ассорти',12960],['Қақталған балық ассорти',12960],['Қуырылған балық ассорти',19690],['Сыралық асшаян',6990]]},
+        { name:'Шашлықтар', items:[['Шашлық сет Light',35000],['Шашлық сет Hard',60000],['Үйрек шашлығы',3800],['Шампиньон шашлығы',2500],['Сиыр еті шашлығы',5000],['Тауық филесі шашлығы',3500],['Қой еті шашлығы',4500],['Гриль көкөністер',2500],['Тауық люля-кебаб',3500],['Қой люля-кебаб',3800],['Қанатшалар',3500]]},
+        { name:'Гарнирлер', items:[['Күріш',1290],['Картоп пюресі',1290],['Картоп фри',1690],['Брокколи және гүлді қырыққабат',1690],['Картоп тілімдері',1790],['Гриль көкөністер',2590],['Үйше картоп',2890]]},
+        { name:'Тұздықтар', items:[['Демиглас',690],['Ірімшік тұздығы',690],['Кетчуп',690],['Барбекю',690],['Кілегейлі-саңырауқұлақ',690]]},
+        { name:'Сыралық сеттер', items:[['SET 1',6990],['SET 2',8990],['SET VIP',11990]]}
+      ],
+      bar: null
+    }
+  };
+  DATA.kz.bar = DATA.ru.bar;
 
-  kz: {
-    ui: {
-      search:"Мәзірден іздеу...", all:"Барлығы", food:"Ас мәзірі", bar:"Бар мәзірі",
-      picked:"Таңдалғаны:", empty:"Себет бос", total:"Барлығы",
-      svc:"Қызмет 10%", clear:"Тазалау", copy:"Көшіру", send:"WhatsApp-қа жіберу",
-      sum:"Сома", svcLine:"қызмет 10%", svcOff:"қызмет өшірулі",
-      modalTitle:"Тапсырыс", copied:"Көшірілді ✅"
-    },
-    // БАР атаулары бренд/ағылшынша – сол күйі қалдырдым, ал тағамдарды аудардым.
-    food: [
-      { name:'Сорпалар', items:[
-        ['Жасымық крем-сорпасы', 2260],
-        ['Тауық қосылған рамен', 4660],
-        ['Сиыр еті қосылған рамен', 5990],
-        ['Теңіз өнімдерімен том ям', 5990],
-      ]},
-      { name:'Салаттар', items:[
-        ['Карамельденген алмұрт және жаңғақ салаты', 4560],
-        ['Манго салаты', 4860],
-        ['«Бавариялық» салат', 4960],
-        ['Қытырлақ баклажан', 4990],
-        ['Тауық қосылған Цезарь', 5690],
-        ['Асшаян қосылған Цезарь', 5690],
-        ['Албырт қосылған Цезарь', 5690],
-        ['Жылы албырт салаты', 5990],
-        ['Сиыр етінен салат', 5990],
-        ['Руккола және асшаян салаты', 6290],
-        ['Ростбиф салаты', 5990],
-        ['Моцарелла, авокадо және халлуми салаты', 5600],
-        ['Албырт қосылған оливье', 4400],
-      ]},
-      { name:'Негізгі тағамдар', items:[
-        ['Саңырауқұлақ қосылған бауыр', 4400],
-        ['Бұзау етінен бефстроганов', 8660],
-        ['Сибас', 10990],
-        ['Дорадо', 10990],
-        ['Филе-миньон', 11990],
-        ['Рибай стейк', 12660],
-        ['Ти-Бон стейк', 12990],
-        ['Аргентиналық тәсілмен албырт стейк', 15660],
-      ]},
-      { name:'Компанияға арналған', items:[
-        ['Тұтас пісірілген албырт', 139990],
-        ['Картоппен қой еті', 44990],
-        ['Бұқтырылған сиыр қабырғасы', 44990],
-        ['Пісірілген қозы жамбасы (15 адамға дейін)', 48990],
-        ['Грильдегі ет ассорти (15 адамға дейін)', 49990],
-        ['Грильдегі балық ассорти', 59990],
-      ]},
-      { name:'Тіскебасарлар', items:[
-        ['Зәйтүн қосылған ассорти', 3940],
-        ['Тауық попкорны', 6790],
-        ['Қытайша судак', 7960],
-        ['Баклажан соте', 5990],
-        ['Кабачок соте', 7990],
-        ['Ірімшік табақ', 12960],
-        ['Ет ассорти', 12960],
-        ['Қақталған балық ассорти', 12960],
-        ['Қуырылған балық ассорти', 19690],
-        ['Сыралық асшаян', 6990],
-      ]},
-      { name:'Шашлықтар', items:[
-        ['Шашлық сет Light', 35000],
-        ['Шашлық сет Hard', 60000],
-        ['Үйрек шашлығы', 3800],
-        ['Шампиньон шашлығы', 2500],
-        ['Сиыр еті шашлығы', 5000],
-        ['Тауық филесі шашлығы', 3500],
-        ['Қой еті шашлығы', 4500],
-        ['Гриль көкөністер', 2500],
-        ['Тауық люля-кебаб', 3500],
-        ['Қой люля-кебаб', 3800],
-        ['Қанатшалар', 3500],
-      ]},
-      { name:'Гарнирлер', items:[
-        ['Күріш', 1290],
-        ['Картоп пюресі', 1290],
-        ['Картоп фри', 1690],
-        ['Брокколи және гүлді қырыққабат', 1690],
-        ['Картоп тілімдері', 1790],
-        ['Гриль көкөністер', 2590],
-        ['Үйше картоп', 2890],
-      ]},
-      { name:'Тұздықтар', items:[
-        ['Демиглас', 690],
-        ['Ірімшік тұздығы', 690],
-        ['Кетчуп', 690],
-        ['Барбекю', 690],
-        ['Кілегейлі-саңырауқұлақ', 690],
-      ]},
-      { name:'Сыралық сеттер', items:[
-        ['SET 1', 6990],
-        ['SET 2', 8990],
-        ['SET VIP', 11990],
-      ]},
-    ],
-    bar: JSON.parse(JSON.stringify(DATA.ru.bar)) // бар оставляем как есть
+  let lang='ru', section='all';
+  let cart = {};
+
+  const $ = (id)=>document.getElementById(id);
+  const fmt = (n)=>String(n||0).replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+  const ui = ()=>DATA[lang].ui;
+
+  function setLang(l){
+    lang=l;
+    document.querySelectorAll('[data-lang]').forEach(b=>b.classList.toggle('active', b.dataset.lang===l));
+    $('q').placeholder = ui().search;
+    document.querySelector('[data-section="all"]').textContent = ui().all;
+    document.querySelector('[data-section="food"]').textContent = ui().food;
+    document.querySelector('[data-section="bar"]').textContent = ui().bar;
+    $('cartTitle').textContent = ui().picked;
+    $('svcLabel').textContent = ui().svc;
+    $('clearBtn').textContent = ui().clear;
+    $('copyBtn').textContent = ui().show;
+    $('sendBtn').textContent = ui().send;
+    $('mTitle').textContent = ui().modal;
+    render();
+    updateCart();
   }
-};
+  function setSection(s){
+    section=s;
+    document.querySelectorAll('[data-section]').forEach(t=>t.classList.toggle('active', t.dataset.section===s));
+    render();
+  }
 
-/* ========= ЛОГИКА ========= */
-let lang = 'ru';
-let section = 'all';
-let cart = {}; // name -> {price, qty}
+  function add(name, price){
+    if(!cart[name]) cart[name]={price, qty:0};
+    cart[name].qty++;
+    updateCart(); refreshQty();
+  }
+  function sub(name){
+    if(!cart[name]) return;
+    cart[name].qty--;
+    if(cart[name].qty<=0) delete cart[name];
+    updateCart(); refreshQty();
+  }
+  function clearCart(){ cart={}; updateCart(); refreshQty(); }
 
-const $ = (id)=>document.getElementById(id);
+  function blocks(){
+    const d = DATA[lang];
+    const out=[];
+    if(section==='all'||section==='food') out.push(...d.food);
+    if(section==='all'||section==='bar') out.push(...d.bar);
+    return out;
+  }
 
-function fmt(n){ return (n||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' '); }
+  function render(){
+    const q = ($('q').value||'').trim().toLowerCase();
+    const root = $('menu');
+    root.innerHTML='';
 
-function ui(){ return DATA[lang].ui; }
+    for(const cat of blocks()){
+      const items = cat.items.filter(([n]) => !q || n.toLowerCase().includes(q));
+      if(!items.length) continue;
 
-function setLang(l){
-  lang = l;
-  $('ruBtn').classList.toggle('active', l==='ru');
-  $('kzBtn').classList.toggle('active', l==='kz');
-  $('q').placeholder = ui().search;
-  $('tabAll').textContent = ui().all;
-  $('tabFood').textContent = ui().food;
-  $('tabBar').textContent = ui().bar;
-  $('cartTitle').textContent = ui().picked;
-  $('svcLabel').textContent = ui().svc;
-  $('clearBtn').textContent = ui().clear;
-  $('copyBtn').textContent = ui().copy;
-  $('sendBtn').textContent = ui().send;
-  $('modalTitle').textContent = ui().modalTitle;
-  render();
-  updateCart();
-}
+      const wrap = document.createElement('div');
+      wrap.className='category';
+      const h2=document.createElement('h2');
+      h2.textContent=cat.name;
+      wrap.appendChild(h2);
 
-function setSection(s){
-  section = s;
-  $('tabAll').classList.toggle('active', s==='all');
-  $('tabFood').classList.toggle('active', s==='food');
-  $('tabBar').classList.toggle('active', s==='bar');
-  render();
-}
+      for(const [name, price] of items){
+        const row=document.createElement('div');
+        row.className='item';
 
-function add(name, price){
-  if(!cart[name]) cart[name] = {price, qty:0};
-  cart[name].qty++;
-  updateCart();
-  refreshQtyBadges();
-}
+        const left=document.createElement('div');
+        left.className='iname';
+        left.textContent=name;
 
-function sub(name){
-  if(!cart[name]) return;
-  cart[name].qty--;
-  if(cart[name].qty<=0) delete cart[name];
-  updateCart();
-  refreshQtyBadges();
-}
+        const ps=document.createElement('span');
+        ps.className='iprice';
+        ps.textContent = fmt(price)+' ₸';
+        left.appendChild(ps);
 
-function clearCart(){
-  cart = {};
-  updateCart();
-  refreshQtyBadges();
-}
+        const ctr=document.createElement('div');
+        ctr.className='controls';
 
-function buildOrderText(){
-  const entries = Object.entries(cart);
-  if(entries.length===0) return "";
-  const svcOn = $('svc').checked;
+        const bSub=document.createElement('button');
+        bSub.className='btn';
+        bSub.textContent='−';
+        bSub.dataset.action='sub';
+        bSub.dataset.name=name;
 
-  let sum = 0;
-  let text = 'AUTOGRAPH GOLD — ' + (lang==='ru' ? 'заказ' : 'тапсырыс') + '\\n\\n';
+        const qty=document.createElement('div');
+        qty.className='qty';
+        qty.dataset.qty=name;
+        qty.textContent=String(cart[name]?.qty||0);
 
-  entries.forEach(([name, it])=>{
-    const line = it.price * it.qty;
-    sum += line;
-    text += `• ${name} ×${it.qty} — ${fmt(line)} ₸\\n`;
-  });
+        const bAdd=document.createElement('button');
+        bAdd.className='btn';
+        bAdd.textContent='+';
+        bAdd.dataset.action='add';
+        bAdd.dataset.name=name;
+        bAdd.dataset.price=String(price);
 
-  const svc = svcOn ? Math.round(sum * 0.10) : 0;
-  const total = sum + svc;
+        ctr.appendChild(bSub); ctr.appendChild(qty); ctr.appendChild(bAdd);
+        row.appendChild(left); row.appendChild(ctr);
+        wrap.appendChild(row);
+      }
+      root.appendChild(wrap);
+    }
+  }
 
-  text += `\\n${ui().sum}: ${fmt(sum)} ₸\\n`;
-  text += svcOn ? `${ui().svcLine}: ${fmt(svc)} ₸\\n` : `${ui().svcOff}\\n`;
-  text += `${ui().total.toUpperCase()}: ${fmt(total)} ₸\\n`;
-  text += `\\n${lang==='ru' ? 'Обслуживание: 10%' : 'Қызмет: 10%'}`;
-
-  return text;
-}
-
-function openModal(){
-  const t = buildOrderText();
-  if(!t) return;
-  $('orderText').textContent = t;
-  $('mb').style.display = 'flex';
-}
-
-function hideModal(){ $('mb').style.display = 'none'; }
-
-async function copyText(t){
-  try{ await navigator.clipboard.writeText(t); alert(ui().copied); }
-  catch(e){ alert(lang==='ru' ? 'Не удалось. Скопируй вручную из окна.' : 'Көшірілмеді. Қолмен көшіріңіз.'); }
-}
-
-function sendWhatsApp(){
-  const t = buildOrderText();
-  if(!t) return;
-  // WhatsApp deep link
-  const url = `https://wa.me/${PHONE_WA}?text=${encodeURIComponent(t)}`;
-  window.open(url, '_blank');
-}
-
-function render(){
-  const q = ($('q').value || '').trim().toLowerCase();
-  const root = $('menu');
-  root.innerHTML = '';
-
-  const d = DATA[lang];
-  const blocks = [];
-  if(section==='all' || section==='food') blocks.push(...d.food.map(c=>({type:'food',...c})));
-  if(section==='all' || section==='bar')  blocks.push(...d.bar.map(c=>({type:'bar',...c})));
-
-  blocks.forEach(cat=>{
-    const items = cat.items.filter(([n]) => !q || n.toLowerCase().includes(q));
-    if(items.length===0) return;
-
-    const wrap = document.createElement('div');
-    wrap.className = 'category';
-    wrap.innerHTML = `<h2>${cat.name}</h2>`;
-
-    items.forEach(([name, price])=>{
-      const qty = cart[name]?.qty || 0;
-      const row = document.createElement('div');
-      row.className = 'item';
-
-      row.innerHTML = `
-        <div class="iname">
-          ${name}<span class="iprice">${fmt(price)} ₸</span>
-        </div>
-        <div class="controls">
-          <button class="btn" data-action="sub" data-name="${escapeAttr(name)}">−</button>
-          <div class="qty" data-qty="${escapeAttr(name)}">${qty}</div>
-          <button class="btn" data-action="add" data-name="${escapeAttr(name)}" data-price="${price}">+</button>
-        </div>
-      `;
-      wrap.appendChild(row);
+  function refreshQty(){
+    document.querySelectorAll('[data-qty]').forEach(el=>{
+      const name=el.dataset.qty;
+      el.textContent=String(cart[name]?.qty||0);
     });
+  }
 
-    root.appendChild(wrap);
+  function updateCart(){
+    const entries = Object.entries(cart);
+    if(!entries.length){
+      $('cartItems').textContent=ui().empty;
+      $('total').textContent=ui().total+': 0 ₸';
+      $('breakdown').textContent='';
+      return;
+    }
+    let sum=0, html='';
+    for(const [name, it] of entries){
+      const line=it.price*it.qty;
+      sum+=line;
+      html += `${name} ×${it.qty} — ${fmt(line)} ₸<br>`;
+    }
+    const svcOn = $('svc').checked;
+    const svc = svcOn ? Math.round(sum*0.10) : 0;
+    const total = sum + svc;
+
+    $('cartItems').innerHTML=html;
+    $('total').textContent=ui().total+': '+fmt(total)+' ₸';
+    $('breakdown').textContent = svcOn
+      ? `${ui().sum}: ${fmt(sum)} ₸ + ${ui().svcLine}: ${fmt(svc)} ₸`
+      : `${ui().sum}: ${fmt(sum)} ₸ (${ui().svcOff})`;
+  }
+
+  function orderText(){
+    const entries=Object.entries(cart);
+    if(!entries.length) return '';
+    const svcOn=$('svc').checked;
+    let sum=0;
+    let t=`AUTOGRAPH GOLD — ${ui().modal.toLowerCase()}\n\n`;
+    for(const [name, it] of entries){
+      const line=it.price*it.qty;
+      sum+=line;
+      t += `• ${name} ×${it.qty} — ${fmt(line)} ₸\n`;
+    }
+    const svc=svcOn?Math.round(sum*0.10):0;
+    const total=sum+svc;
+    t += `\n${ui().sum}: ${fmt(sum)} ₸\n`;
+    t += svcOn ? `${ui().svcLine}: ${fmt(svc)} ₸\n` : `${ui().svcOff}\n`;
+    t += `${ui().total}: ${fmt(total)} ₸\n`;
+    t += `\n${lang==='ru'?'Обслуживание: 10%':'Қызмет: 10%'}`;
+    return t;
+  }
+
+  async function copyOrder(){
+    const t=orderText(); if(!t) return;
+    try{ await navigator.clipboard.writeText(t); alert(ui().copied); }
+    catch{ /* если браузер запрещает */ $('orderText').textContent=t; showModal(); }
+  }
+  function showModal(){
+    const t=orderText(); if(!t) return;
+    $('orderText').textContent=t;
+    $('mb').style.display='flex';
+  }
+  function hideModal(){ $('mb').style.display='none'; }
+  function sendWA(){
+    const t=orderText(); if(!t) return;
+    window.open(`https://wa.me/${WA_PHONE}?text=${encodeURIComponent(t)}`, '_blank');
+  }
+
+  document.addEventListener('click',(e)=>{
+    const t=e.target;
+    if(t.matches('[data-lang]')) return setLang(t.dataset.lang);
+    if(t.matches('[data-section]')) return setSection(t.dataset.section);
+
+    if(t.dataset.action){
+      const name=t.dataset.name;
+      if(t.dataset.action==='add') return add(name, Number(t.dataset.price||0));
+      return sub(name);
+    }
+
+    if(t.id==='clearBtn') return clearCart();
+    if(t.id==='copyBtn') return showModal();
+    if(t.id==='sendBtn') return sendWA();
+
+    if(t.id==='mCopy') return copyOrder();
+    if(t.id==='mClose' || t.id==='mb') return hideModal();
   });
-}
 
-function escapeAttr(s){
-  return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
+  $('q').addEventListener('input', render);
+  $('svc').addEventListener('change', updateCart);
 
-function refreshQtyBadges(){
-  document.querySelectorAll('[data-qty]').forEach(el=>{
-    const name = el.getAttribute('data-qty');
-    el.textContent = cart[name]?.qty || 0;
-  });
-}
-
-function updateCart(){
-  const entries = Object.entries(cart);
-  const listEl = $('cartItems');
-
-  if(entries.length===0){
-    listEl.textContent = ui().empty;
-    $('total').textContent = `${ui().total}: 0 ₸`;
-    $('breakdown').textContent = '';
-    return;
-  }
-
-  let sum = 0;
-  let html = '';
-  entries.forEach(([name, it])=>{
-    const line = it.price * it.qty;
-    sum += line;
-    html += `${name} ×${it.qty} — ${fmt(line)} ₸<br>`;
-  });
-
-  const svcOn = $('svc').checked;
-  const svc = svcOn ? Math.round(sum*0.10) : 0;
-  const total = sum + svc;
-
-  listEl.innerHTML = html;
-  $('total').textContent = `${ui().total}: ${fmt(total)} ₸`;
-  $('breakdown').textContent = svcOn
-    ? `${ui().sum}: ${fmt(sum)} ₸ + ${ui().svcLine}: ${fmt(svc)} ₸`
-    : `${ui().sum}: ${fmt(sum)} ₸ (${ui().svcOff})`;
-}
-
-/* ========= СОБЫТИЯ (важно!) ========= */
-document.addEventListener('click', (e)=>{
-  const t = e.target;
-
-  // language
-  if(t.matches('[data-lang]')){
-    setLang(t.getAttribute('data-lang'));
-    return;
-  }
-
-  // tabs
-  if(t.matches('[data-section]')){
-    setSection(t.getAttribute('data-section'));
-    return;
-  }
-
-  // menu buttons +/-
-  if(t.matches('[data-action]')){
-    const action = t.getAttribute('data-action');
-    const name = t.getAttribute('data-name');
-    const price = Number(t.getAttribute('data-price') || 0);
-
-    if(action==='add') add(name, price);
-    if(action==='sub') sub(name);
-    return;
-  }
-
-  if(t.id==='clearBtn'){ clearCart(); return; }
-  if(t.id==='copyBtn'){ const txt = buildOrderText(); if(txt) copyText(txt); return; }
-  if(t.id==='sendBtn'){ sendWhatsApp(); return; }
-
-  if(t.id==='modalCopy'){ const txt = $('orderText').textContent; if(txt) copyText(txt); return; }
-  if(t.id==='modalClose'){ hideModal(); return; }
-  if(t.id==='mb'){ hideModal(); return; }
-});
-
-$('q').addEventListener('input', render);
-$('svc').addEventListener('change', updateCart);
-
-// старт
-setLang('ru');
-updateCart();
+  setLang('ru');
+  setSection('all');
 </script>
 </body>
 </html>
