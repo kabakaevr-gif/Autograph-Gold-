@@ -3,397 +3,533 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Autograph Gold — QR Menu</title>
+  <meta name="theme-color" content="#0b0b0b" />
+  <title>LoungeTech — цифровые решения для премиальных заведений</title>
+  <meta name="description" content="LoungeTech — цифровые решения для премиальных заведений. Онлайн-бронирование, CRM гостей, бонусная система, аналитика, автоматизация." />
+
   <style>
-    :root{--bg:#0b0b0b;--gold:#c9b27c;--text:#f5f5f5;--muted:#bdbdbd;--line:#2a2a2a}
+    :root{
+      --bg:#0b0b0b;
+      --panel:#111;
+      --text:#f5f5f5;
+      --muted:#bdbdbd;
+      --line:#232323;
+      --accent:#ffffff; /* минимализм: без золота */
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --radius: 18px;
+    }
     *{box-sizing:border-box}
-    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
-    header{padding:16px 14px;text-align:center;border-bottom:2px solid var(--gold)}
-    h1{margin:0;letter-spacing:3px;color:var(--gold);font-size:22px}
-    .top{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:10px}
-    .chip{border:1px solid var(--gold);background:#000;color:var(--gold);padding:6px 10px;border-radius:10px;cursor:pointer;font-weight:700}
-    .chip.active{background:var(--gold);color:#000}
-    .wrap{max-width:980px;margin:0 auto;padding:16px 14px 170px}
-    .toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:8px 0 14px}
-    .search{flex:1;min-width:220px;max-width:520px;background:#0f0f0f;border:1px solid var(--line);color:var(--text);padding:10px 12px;border-radius:12px;outline:none}
-    .tabs{display:flex;gap:8px;flex-wrap:wrap}
-    .tab{border:1px solid var(--gold);background:transparent;color:var(--gold);padding:8px 10px;border-radius:12px;cursor:pointer;font-weight:700}
-    .tab.active{background:var(--gold);color:#000}
-    .category{margin:22px 0}
-    .category h2{margin:0 0 10px;color:var(--gold);border-bottom:1px solid var(--gold);padding-bottom:6px;font-size:18px}
-    .item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line)}
-    .iname{font-size:14px;line-height:1.25}
-    .iprice{color:var(--muted);font-size:13px;margin-left:8px;white-space:nowrap}
-    .controls{display:flex;align-items:center;gap:8px;flex-shrink:0}
-    .btn{width:34px;height:34px;border-radius:10px;border:1px solid var(--gold);background:#000;color:var(--gold);font-size:18px;cursor:pointer}
-    .qty{min-width:18px;text-align:center;font-weight:900}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, Helvetica, sans-serif;
+      background: radial-gradient(1000px 500px at 50% -10%, rgba(255,255,255,.08), transparent 55%),
+                  radial-gradient(900px 450px at 20% 20%, rgba(255,255,255,.06), transparent 60%),
+                  radial-gradient(900px 450px at 80% 25%, rgba(255,255,255,.05), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x:hidden;
+    }
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:1120px;margin:0 auto;padding:0 18px}
 
-    .cart{position:fixed;left:0;right:0;bottom:0;background:rgba(17,17,17,.96);border-top:2px solid var(--gold);padding:12px 14px;backdrop-filter:blur(6px)}
-    .cart-inner{max-width:980px;margin:0 auto;display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
-    .cart-left{min-width:240px;flex:1}
-    .cart-title{color:var(--muted);font-size:12px;margin-bottom:6px}
-    .cart-items{font-size:13px;line-height:1.35;max-height:90px;overflow:auto;padding-right:6px}
-    .cart-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-    .total{color:var(--gold);font-size:16px;font-weight:900}
-    .small{color:var(--muted);font-size:12px}
-    .svc{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}
-    .svc input{transform:scale(1.1)}
-    .action{padding:10px 12px;border-radius:12px;border:none;font-weight:900;cursor:pointer}
-    .clear{background:#3a0b0b;color:#fff}
-    .copy{background:#1a1a1a;color:var(--gold);border:1px solid var(--gold)}
-    .send{background:var(--gold);color:#000}
+    /* Topbar */
+    .topbar{
+      position:sticky;top:0;z-index:50;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(to bottom, rgba(11,11,11,.85), rgba(11,11,11,.55));
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .topbar .inner{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 0;
+    }
+    .brand{
+      display:flex;align-items:baseline;gap:10px;
+      letter-spacing:.2px;
+    }
+    .brand .name{
+      font-size:18px;font-weight:650;
+    }
+    .brand .city{
+      font-size:12px;color:var(--muted);
+      border:1px solid rgba(255,255,255,.12);
+      padding:4px 8px;border-radius:999px;
+    }
+    .nav{
+      display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+    }
+    .nav a{
+      font-size:13px;color:rgba(245,245,245,.9);
+      padding:8px 10px;border-radius:10px;
+      border:1px solid transparent;
+    }
+    .nav a:hover{border-color:rgba(255,255,255,.12); background: rgba(255,255,255,.04);}
 
-    .mb{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;padding:14px}
-    .modal{max-width:560px;width:100%;background:#0f0f0f;border:1px solid var(--gold);border-radius:16px;padding:14px}
-    .modal h3{margin:0 0 10px;color:var(--gold);letter-spacing:1px}
-    .modal pre{white-space:pre-wrap;word-break:break-word;background:#0b0b0b;border:1px solid var(--line);border-radius:12px;padding:10px;color:var(--text);font-size:13px}
-    .m-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:10px}
-    .close{background:#222;color:#fff;border:1px solid #444}
+    /* Buttons */
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      gap:10px;
+      padding:12px 16px;border-radius:12px;
+      font-weight:600;font-size:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.04);
+      transition: transform .14s ease, background .14s ease, border-color .14s ease;
+      will-change: transform;
+    }
+    .btn:hover{transform: translateY(-1px); border-color: rgba(255,255,255,.24); background: rgba(255,255,255,.06);}
+    .btn.primary{
+      background: #fff;color:#000;border-color:#fff;
+    }
+    .btn.primary:hover{background:#f3f3f3;border-color:#f3f3f3;}
+    .btn.ghost{background:transparent}
+    .btn.small{padding:10px 12px;border-radius:10px;font-size:13px}
+
+    /* Hero */
+    .hero{padding:64px 0 34px}
+    .kicker{
+      display:inline-flex;gap:10px;align-items:center;
+      color:rgba(245,245,245,.9);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      padding:8px 12px;border-radius:999px;
+      font-size:12px;
+    }
+    .dot{
+      width:7px;height:7px;border-radius:999px;background:#fff;opacity:.9;
+      box-shadow: 0 0 18px rgba(255,255,255,.35);
+    }
+    h1{
+      margin:16px 0 10px;
+      font-size:48px;line-height:1.06;
+      letter-spacing:-.6px;
+      font-weight:750;
+    }
+    .sub{
+      max-width:760px;
+      margin:0 0 22px;
+      color:rgba(245,245,245,.78);
+      font-size:16px;line-height:1.6;
+    }
+    .ctaRow{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .fine{
+      margin-top:14px;color:rgba(245,245,245,.55);
+      font-size:12px;
+    }
+
+    /* Grid sections */
+    section{padding:28px 0}
+    .sectionTitle{
+      display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;
+      margin:0 0 14px;
+    }
+    .sectionTitle h2{
+      margin:0;font-size:20px;font-weight:700;letter-spacing:-.2px;
+    }
+    .sectionTitle p{
+      margin:0;color:rgba(245,245,245,.6);font-size:13px;max-width:680px;
+    }
+    .grid{
+      display:grid;gap:14px;
+      grid-template-columns: repeat(12, 1fr);
+    }
+    .card{
+      grid-column: span 6;
+      border:1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.03);
+      border-radius: var(--radius);
+      padding:18px;
+      box-shadow: none;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+      will-change: transform;
+      position:relative;
+      overflow:hidden;
+    }
+    .card:hover{
+      transform: translateY(-3px);
+      border-color: rgba(255,255,255,.18);
+      background: rgba(255,255,255,.045);
+    }
+    .card h3{margin:0 0 8px;font-size:16px;font-weight:700}
+    .card p{margin:0;color:rgba(245,245,245,.68);font-size:13px;line-height:1.55}
+    .meta{
+      margin-top:12px;
+      display:flex;gap:8px;flex-wrap:wrap;
+    }
+    .pill{
+      font-size:12px;color:rgba(245,245,245,.8);
+      border:1px solid rgba(255,255,255,.12);
+      padding:6px 10px;border-radius:999px;
+      background: rgba(255,255,255,.03);
+    }
+
+    /* Case block */
+    .case{
+      grid-column: span 12;
+      padding:20px;
+      border-radius: 22px;
+      border:1px solid rgba(255,255,255,.12);
+      background:
+        radial-gradient(800px 240px at 10% 20%, rgba(255,255,255,.07), transparent 55%),
+        radial-gradient(800px 240px at 90% 35%, rgba(255,255,255,.06), transparent 55%),
+        rgba(255,255,255,.03);
+    }
+    .caseTop{
+      display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    }
+    .case h3{margin:0 0 8px;font-size:18px;font-weight:750}
+    .case p{margin:0;color:rgba(245,245,245,.7);font-size:13px;line-height:1.55;max-width:780px}
+    .caseCols{
+      margin-top:14px;
+      display:grid;gap:12px;
+      grid-template-columns: repeat(12, 1fr);
+    }
+    .caseCols .mini{
+      grid-column: span 4;
+      border:1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.03);
+      border-radius: 16px;
+      padding:14px;
+    }
+    .mini b{display:block;margin-bottom:6px}
+    .mini span{color:rgba(245,245,245,.68);font-size:12px;line-height:1.45;display:block}
+
+    /* Process */
+    .step{grid-column: span 3; padding:16px}
+    .num{
+      width:34px;height:34px;border-radius:10px;
+      display:flex;align-items:center;justify-content:center;
+      font-weight:750;font-size:13px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      margin-bottom:10px;
+    }
+
+    /* Contact */
+    .contact{
+      display:grid;grid-template-columns: 1.2fr .8fr;gap:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.03);
+      border-radius: 22px;
+      padding:18px;
+    }
+    .contact h3{margin:0 0 10px;font-size:18px;font-weight:750}
+    .contact p{margin:0;color:rgba(245,245,245,.7);font-size:13px;line-height:1.6}
+    .contact .box{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.03);
+      border-radius: 18px;
+      padding:14px;
+    }
+    .kv{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .kv .label{color:rgba(245,245,245,.55);font-size:12px}
+    .kv .value{font-weight:650;font-size:13px}
+
+    footer{
+      padding:26px 0 34px;
+      color:rgba(245,245,245,.52);
+      font-size:12px;
+      border-top:1px solid rgba(255,255,255,.08);
+      margin-top:28px;
+    }
+
+    /* Scroll reveal */
+    .reveal{
+      opacity:0; transform: translateY(14px);
+      transition: opacity .6s ease, transform .6s ease;
+      will-change: opacity, transform;
+    }
+    .reveal.is-visible{opacity:1; transform:none;}
+    @media (prefers-reduced-motion: reduce){
+      .reveal{transition:none;opacity:1;transform:none;}
+      .card,.btn{transition:none}
+    }
+
+    /* Responsive */
+    @media (max-width: 960px){
+      h1{font-size:38px}
+      .card{grid-column: span 12}
+      .step{grid-column: span 6}
+      .caseCols .mini{grid-column: span 12}
+      .contact{grid-template-columns: 1fr}
+    }
+    @media (max-width: 520px){
+      h1{font-size:32px}
+      .nav{display:none}
+      .brand .city{display:none}
+    }
   </style>
 </head>
+
 <body>
-  <header>
-    <h1>AUTOGRAPH GOLD</h1>
-    <div class="top">
-      <button class="chip active" data-lang="ru">RU</button>
-      <button class="chip" data-lang="kz">KZ</button>
+  <div class="topbar">
+    <div class="wrap">
+      <div class="inner">
+        <div class="brand">
+          <div class="name">LoungeTech</div>
+          <div class="city">Астана</div>
+        </div>
+        <div class="nav">
+          <a href="#services">Услуги</a>
+          <a href="#case">Кейс</a>
+          <a href="#process">Процесс</a>
+          <a href="#contact">Контакты</a>
+        </div>
+        <a class="btn primary small" href="https://wa.me/87066861056?text=%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82!%20%D0%A5%D0%BE%D1%87%D1%83%20%D1%83%D0%B7%D0%BD%D0%B0%D1%82%D1%8C%20%D0%BF%D1%80%D0%BE%20LoungeTech%20%D0%B8%20%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D1%83%20%D0%B4%D0%BB%D1%8F%20%D0%BC%D0%BE%D0%B5%D0%B3%D0%BE%20%D0%B7%D0%B0%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D1%8F." target="_blank" rel="noopener">
+          WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="wrap">
+      <div class="kicker reveal">
+        <span class="dot"></span>
+        <span>Цифровые решения для премиальных заведений</span>
+      </div>
+
+      <h1 class="reveal">Сайт, бронь, CRM и аналитика — <br/>под ключ.</h1>
+
+      <p class="sub reveal">
+        LoungeTech помогает заведению расти: больше бронирований, выше средний чек, выше возврат гостей.
+        Мы внедряем понятные инструменты: онлайн-бронь VIP, база клиентов, бонусная система, отчёты и автоматизация.
+      </p>
+
+      <div class="ctaRow reveal">
+        <a class="btn primary" href="https://wa.me/87066861056?text=%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%BA%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%86%D0%B8%D1%8E%20%D0%BF%D0%BE%20%D1%86%D0%B8%D1%84%D1%80%D0%BE%D0%B2%D0%BE%D0%B9%20%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B5%20%D0%B4%D0%BB%D1%8F%20%D0%B7%D0%B0%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D1%8F." target="_blank" rel="noopener">
+          Получить консультацию
+        </a>
+        <a class="btn ghost" href="#case">Смотреть кейс</a>
+      </div>
+
+      <div class="fine reveal">
+        Астана • внедрение под ваш формат (лаунж, караоке, ресторан, VIP комнаты)
+      </div>
     </div>
   </header>
 
-  <div class="wrap">
-    <div class="toolbar">
-      <input id="q" class="search" placeholder="Поиск по меню..." />
-      <div class="tabs">
-        <button class="tab active" data-section="all">Всё</button>
-        <button class="tab" data-section="food">Кухня</button>
-        <button class="tab" data-section="bar">Бар</button>
+  <main class="wrap">
+    <!-- Services -->
+    <section id="services" class="reveal">
+      <div class="sectionTitle">
+        <h2>Услуги</h2>
+        <p>Фокус на простоте для гостя и управляемости для руководства: меньше ручной работы, больше прозрачности.</p>
       </div>
-    </div>
-    <div id="menu"></div>
-  </div>
 
-  <div class="cart">
-    <div class="cart-inner">
-      <div class="cart-left">
-        <div class="cart-title" id="cartTitle">Выбрано:</div>
-        <div class="cart-items" id="cartItems">Корзина пуста</div>
-      </div>
-      <div class="cart-right">
-        <label class="svc"><input id="svc" type="checkbox" checked /> <span id="svcLabel">Сервис 10%</span></label>
-        <div>
-          <div class="total" id="total">Итого: 0 ₸</div>
-          <div class="small" id="breakdown"></div>
+      <div class="grid">
+        <div class="card">
+          <h3>Премиум сайт</h3>
+          <p>Современный, быстрый, мобильный. Меню, VIP-комнаты, акции — дизайн уровня premium.</p>
+          <div class="meta">
+            <span class="pill">UX / UI</span>
+            <span class="pill">Скорость</span>
+            <span class="pill">Анимации</span>
+          </div>
         </div>
-        <button class="action clear" id="clearBtn">Очистить</button>
-        <button class="action copy" id="copyBtn">Показать заказ</button>
-        <button class="action send" id="sendBtn">Отправить на WhatsApp</button>
+
+        <div class="card">
+          <h3>Онлайн-бронирование</h3>
+          <p>Заявка за 30 секунд: VIP, дата/время, гости, комментарий. Подтверждения и уведомления.</p>
+          <div class="meta">
+            <span class="pill">Календарь</span>
+            <span class="pill">WhatsApp</span>
+            <span class="pill">Предзаказ</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>CRM гостей</h3>
+          <p>База клиентов, история визитов, заметки, сегменты: VIP/потерянные/постоянники.</p>
+          <div class="meta">
+            <span class="pill">Телефон</span>
+            <span class="pill">История</span>
+            <span class="pill">Сегменты</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Бонусная система</h3>
+          <p>Личный кабинет, начисление/списание, статусы, ограничения по списанию — всё прозрачно.</p>
+          <div class="meta">
+            <span class="pill">Silver/Gold/Platinum</span>
+            <span class="pill">QR</span>
+            <span class="pill">Правила</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Аналитика</h3>
+          <p>Загрузка VIP, выручка по залам, средний чек, повторные гости, эффективность акций.</p>
+          <div class="meta">
+            <span class="pill">Дашборд</span>
+            <span class="pill">Отчёты</span>
+            <span class="pill">Графики</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Автоматизация маркетинга</h3>
+          <p>Напоминания, поздравления, “вернись”-сценарии, уведомления менеджерам.</p>
+          <div class="meta">
+            <span class="pill">Сценарии</span>
+            <span class="pill">Сегментация</span>
+            <span class="pill">Удержание</span>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <div class="mb" id="mb">
-    <div class="modal">
-      <h3 id="mTitle">Заказ</h3>
-      <pre id="orderText"></pre>
-      <div class="m-actions">
-        <button class="action copy" id="mCopy">Скопировать</button>
-        <button class="action close" id="mClose">Закрыть</button>
+    <!-- Case -->
+    <section id="case" class="reveal">
+      <div class="sectionTitle">
+        <h2>Кейс: Autograph</h2>
+        <p>Первый эталонный кейс LoungeTech. Упакуем как портфолио и будем масштабировать на другие заведения.</p>
       </div>
-    </div>
-  </div>
 
-<script>
-  const WA_PHONE = '77777785757';
+      <div class="grid">
+        <div class="case">
+          <div class="caseTop">
+            <div>
+              <h3>Autograph — цифровая система для VIP-залов</h3>
+              <p>
+                Внедрение: современный сайт + онлайн-бронь + отчётность и основа CRM.
+                Дальше усиливаем: бонусная система, панель управляющего, автоматизация уведомлений.
+              </p>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <a class="btn" href="#contact">Запросить демо</a>
+              <a class="btn primary" href="https://wa.me/87066861056?text=%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B4%D0%B5%D0%BC%D0%BE%20%D0%BA%D0%B0%D0%BA%20%D1%83%20Autograph%20%D0%B8%20%D1%80%D0%B0%D1%81%D1%87%D1%91%D1%82%20%D1%81%D1%82%D0%BE%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D0%B8." target="_blank" rel="noopener">
+                Хочу как Autograph
+              </a>
+            </div>
+          </div>
 
-  const DATA = {
-    ru: {
-      ui: {
-        search:'Поиск по меню...', all:'Всё', food:'Кухня', bar:'Бар',
-        picked:'Выбрано:', empty:'Корзина пуста', total:'Итого',
-        svc:'Сервис 10%', clear:'Очистить', show:'Показать заказ', send:'Отправить на WhatsApp',
-        sum:'Сумма', svcLine:'сервис 10%', svcOff:'сервис выключен',
-        modal:'Заказ', copied:'Скопировано ✅'
-      },
-      food: [
-        { name:'Супы', items:[
-          ['Крем-суп из чечевицы',2260],['Рамен с курицей',4660],['Рамен с говядиной',5990],['Том ям с морепродуктами',5990]
-        ]},
-        { name:'Салаты', items:[
-          ['Салат с карамелизированной грушей и грецким орехом',4560],['Салат с манго',4860],['Салат «Баварский»',4960],['Хрустящие баклажаны',4990],
-          ['Цезарь с цыплёнком',5690],['Цезарь с креветками',5690],['Цезарь с лососем',5690],['Тёплый салат с лососем',5990],
-          ['Салат с говядиной',5990],['Салат с рукколой и креветками',6290],['Салат с ростбифом',5990],['Салат с моцареллой, авокадо и халуми',5600],['Оливье с сёмгой',4400]
-        ]},
-        { name:'Блюда на компанию', items:[
-          ['Запечённая сёмга целиком',139990],['Мясо барашка с картофелем',44990],['Томлёные рёбра говядины',44990],
-          ['Запечённая ножка ягнёнка (до 15 чел)',48990],['Мясное плато на гриле (до 15 чел)',49990],['Рыбное плато на гриле',59990]
-        ]},
-        { name:'Вторые блюда', items:[
-          ['Печень с грибами',4400],['Бефстроганов из телятины',8660],['Сибас',10990],['Дорадо',10990],
-          ['Филе миньон',11990],['Стейк Рибай',12660],['Стейк Ти-Бон',12990],['Стейк из лосося по-аргентински',15660]
-        ]},
-        { name:'Закуски', items:[
-          ['Нарезка с оливками',3940],['Попкорн из курицы',6790],['Судак по-китайски',7960],['Соте из баклажанов',5990],['Соте из кабачков',7990],
-          ['Сырное плато',12960],['Мясная нарезка',12960],['Ассорти из копчёной рыбы',12960],['Ассорти из жареной рыбы',19690],['Пивные креветки',6990]
-        ]},
-        { name:'Шашлыки', items:[
-          ['Шашлыки сет Light',35000],['Шашлыки сет Hard',60000],['Шашлык утка',3800],['Шашлык шампиньоны',2500],['Шашлык говядина',5000],
-          ['Шашлык из куриного филе',3500],['Шашлык баранина',4500],['Овощи на гриле',2500],['Люля куриный',3500],['Люля баранина',3800],['Крылышки',3500]
-        ]},
-        { name:'Гарниры', items:[
-          ['Рис',1290],['Пюре',1290],['Картофель фри',1690],['Брокколи с цветной капустой',1690],['Картофельные дольки',1790],['Овощи на гриле',2590],['Картофель по-домашнему',2890]
-        ]},
-        { name:'Соусы', items:[['Демигласс',690],['Сырный',690],['Кетчуп',690],['Барбекю',690],['Сливочно-грибной',690]]},
-        { name:'Пивные сеты', items:[['SET 1',6990],['SET 2',8990],['SET VIP',11990]]}
-      ],
-      bar: [
-        { name:'Безалкогольные напитки', items:[['ASSU',1290],['Cola',1590],['Schweppes',1590],['Сок в ассортименте',2590]]},
-        { name:'Авторские чаи', items:[['Black tea',2490],['Green tea',2490],['Tashkent’s tea',3490],['Moroccan tea',3490],['Tea of wild berries',3490]]},
-        { name:'Лимонады', items:[['Mango – Passion Fruit',3990],['Raspberry',3990],['Pomegranate',3990],['Kiwi – Lime',3990],['Watermelon – Melon',3990]]},
-        { name:'Коктейли', items:[['Long Island Ice Tea',4000],['Aperol Sprite',3800],['Gin Tonic',3900],['Autograph Special',3800]]},
-        { name:'Водка', items:[['Absolute Blue',2690],['Gray Goose',3290],['Beluga',3290],['Belvedere',3500]]},
-        { name:'Настойка', items:[['Jägermeister',2890]]},
-        { name:'Вино', items:[['Casasole',19990],['San Valentin',23990],['Nuala',33990],['Jacobs Creek',14990]]},
-        { name:'Вермуты', items:[['Martini Bianco',2290],['Martini Rosso',2290],['Martini Extra Dry',2290]]},
-        { name:'Купажированный ирландский виски', items:[['Jameson Original',2790],['Jameson IPA',2690],['Jameson Black Barrel',2790],['Jack Daniel’s',2990],['Jim Beam',2990],['Chivas Regal 12 y.o',3990],['Chivas Regal 18 y.o',7690],['Ballantine’s Finest',2390]]},
-        { name:'Виски односолодовые', items:[['The Glenlivet 12 y.o',4990],['The Glenlivet 18 y.o',6990],['Glenfiddich 12 y.o',4790],['Macallan 12 y.o',7690],['Macallan 18 y.o',11990]]},
-        { name:'Ром', items:[['Bacardi Oakheart',2890],['Bacardi Carta Blanca',2890],['Bacardi Carta Negra',2890],['Bacardi Spiced',2890]]},
-        { name:'Джин', items:[['Beefeater',2490],['Beefeater Blackberry',2800],['Beefeater Blood Orange',3000],['Beefeater Pink Blackberry',2800]]},
-        { name:'Текила', items:[['Olmeca Blanco',2590],['Olmeca Gold',2590],['Bombey',2790]]},
-        { name:'Коньяк', items:[['Ararat 5 y.o',2890],['Ararat Ahn 7 y.o',3990],['Ararat Akhtamar 10 y.o',3890],['Hennessy VS',3990],['Hennessy VSOP',5890],['Hennessy XO',11990]]},
-        { name:'Пиво бутылочное', items:[['Corona Extra',2790],['Miller',2590],['Heineken',2590]]},
-        { name:'Игристые вина', items:[['Santo Stefano',17000],['Martini Asti',19000],['Martini Prosecco',19000],['Moët & Chandon Imperial',116000],['Moët Chandon Rosé',96000],['Bottega Prosecco',29000]]}
-      ]
-    },
-    kz: {
-      ui: {
-        search:'Мәзірден іздеу...', all:'Барлығы', food:'Ас мәзірі', bar:'Бар мәзірі',
-        picked:'Таңдалғаны:', empty:'Себет бос', total:'Барлығы',
-        svc:'Қызмет 10%', clear:'Тазалау', show:'Тапсырысты көрсету', send:'WhatsApp-қа жіберу',
-        sum:'Сома', svcLine:'қызмет 10%', svcOff:'қызмет өшірулі',
-        modal:'Тапсырыс', copied:'Көшірілді ✅'
-      },
-      food: [
-        { name:'Сорпалар', items:[['Жасымық крем-сорпасы',2260],['Тауық қосылған рамен',4660],['Сиыр еті қосылған рамен',5990],['Теңіз өнімдерімен том ям',5990]]},
-        { name:'Салаттар', items:[
-          ['Карамельденген алмұрт және жаңғақ салаты',4560],['Манго салаты',4860],['«Бавариялық» салат',4960],['Қытырлақ баклажан',4990],
-          ['Тауық қосылған Цезарь',5690],['Асшаян қосылған Цезарь',5690],['Албырт қосылған Цезарь',5690],['Жылы албырт салаты',5990],
-          ['Сиыр етінен салат',5990],['Руккола және асшаян салаты',6290],['Ростбиф салаты',5990],['Моцарелла, авокадо және халлуми салаты',5600],['Албырт қосылған оливье',4400]
-        ]},
-        { name:'Компанияға арналған', items:[
-          ['Тұтас пісірілген албырт',139990],['Картоппен қой еті',44990],['Бұқтырылған сиыр қабырғасы',44990],
-          ['Пісірілген қозы жамбасы (15 адамға дейін)',48990],['Грильдегі ет ассорти (15 адамға дейін)',49990],['Грильдегі балық ассорти',59990]
-        ]},
-        { name:'Негізгі тағамдар', items:[['Саңырауқұлақ қосылған бауыр',4400],['Бұзау етінен бефстроганов',8660],['Сибас',10990],['Дорадо',10990],['Филе-миньон',11990],['Рибай стейк',12660],['Ти-Бон стейк',12990],['Аргентиналық тәсілмен албырт стейк',15660]]},
-        { name:'Тіскебасарлар', items:[['Зәйтүн қосылған ассорти',3940],['Тауық попкорны',6790],['Қытайша судак',7960],['Баклажан соте',5990],['Кабачок соте',7990],['Ірімшік табақ',12960],['Ет ассорти',12960],['Қақталған балық ассорти',12960],['Қуырылған балық ассорти',19690],['Сыралық асшаян',6990]]},
-        { name:'Шашлықтар', items:[['Шашлық сет Light',35000],['Шашлық сет Hard',60000],['Үйрек шашлығы',3800],['Шампиньон шашлығы',2500],['Сиыр еті шашлығы',5000],['Тауық филесі шашлығы',3500],['Қой еті шашлығы',4500],['Гриль көкөністер',2500],['Тауық люля-кебаб',3500],['Қой люля-кебаб',3800],['Қанатшалар',3500]]},
-        { name:'Гарнирлер', items:[['Күріш',1290],['Картоп пюресі',1290],['Картоп фри',1690],['Брокколи және гүлді қырыққабат',1690],['Картоп тілімдері',1790],['Гриль көкөністер',2590],['Үйше картоп',2890]]},
-        { name:'Тұздықтар', items:[['Демиглас',690],['Ірімшік тұздығы',690],['Кетчуп',690],['Барбекю',690],['Кілегейлі-саңырауқұлақ',690]]},
-        { name:'Сыралық сеттер', items:[['SET 1',6990],['SET 2',8990],['SET VIP',11990]]}
-      ],
-      bar: null
-    }
-  };
-  DATA.kz.bar = DATA.ru.bar;
+          <div class="caseCols">
+            <div class="mini">
+              <b>Онлайн-бронь</b>
+              <span>Сбор заявки по VIP, времени, гостям, комментариям. Подтверждение и фиксация броней.</span>
+            </div>
+            <div class="mini">
+              <b>Управление загрузкой</b>
+              <span>Основа для отчётов по VIP и дашборда управляющего: дни провалов, лидеры по выручке.</span>
+            </div>
+            <div class="mini">
+              <b>CRM / Бонусы</b>
+              <span>Переходим к базе гостей, статусам и кабинету гостя — удержание и повторные визиты.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  let lang='ru', section='all';
-  let cart = {};
+    <!-- Process -->
+    <section id="process" class="reveal">
+      <div class="sectionTitle">
+        <h2>Как проходит работа</h2>
+        <p>Максимально прозрачно: вы понимаете что, когда и зачем делаем. Без хаоса и “потом доделаем”.</p>
+      </div>
 
-  const $ = (id)=>document.getElementById(id);
-  const fmt = (n)=>String(n||0).replace(/\B(?=(\d{3})+(?!\d))/g,' ');
-  const ui = ()=>DATA[lang].ui;
+      <div class="grid">
+        <div class="card step">
+          <div class="num">01</div>
+          <h3>Диагностика</h3>
+          <p>Цели, формат заведения, текущие процессы, точки роста: бронь, чек, удержание.</p>
+        </div>
+        <div class="card step">
+          <div class="num">02</div>
+          <h3>Прототип</h3>
+          <p>Собираем структуру сайта и сценарии: бронь, CRM, бонусы, отчёты.</p>
+        </div>
+        <div class="card step">
+          <div class="num">03</div>
+          <h3>Внедрение</h3>
+          <p>Делаем интерфейс, интеграции, формы, уведомления. Подключаем аналитику.</p>
+        </div>
+        <div class="card step">
+          <div class="num">04</div>
+          <h3>Обучение</h3>
+          <p>Инструкция для персонала + правила. Чтобы всё работало без “только он знает”.</p>
+        </div>
+      </div>
+    </section>
 
-  function setLang(l){
-    lang=l;
-    document.querySelectorAll('[data-lang]').forEach(b=>b.classList.toggle('active', b.dataset.lang===l));
-    $('q').placeholder = ui().search;
-    document.querySelector('[data-section="all"]').textContent = ui().all;
-    document.querySelector('[data-section="food"]').textContent = ui().food;
-    document.querySelector('[data-section="bar"]').textContent = ui().bar;
-    $('cartTitle').textContent = ui().picked;
-    $('svcLabel').textContent = ui().svc;
-    $('clearBtn').textContent = ui().clear;
-    $('copyBtn').textContent = ui().show;
-    $('sendBtn').textContent = ui().send;
-    $('mTitle').textContent = ui().modal;
-    render();
-    updateCart();
-  }
-  function setSection(s){
-    section=s;
-    document.querySelectorAll('[data-section]').forEach(t=>t.classList.toggle('active', t.dataset.section===s));
-    render();
-  }
+    <!-- Contact -->
+    <section id="contact" class="reveal">
+      <div class="sectionTitle">
+        <h2>Контакты</h2>
+        <p>Напиши в WhatsApp — я отвечу и предложу план внедрения под ваш формат и бюджет.</p>
+      </div>
 
-  function add(name, price){
-    if(!cart[name]) cart[name]={price, qty:0};
-    cart[name].qty++;
-    updateCart(); refreshQty();
-  }
-  function sub(name){
-    if(!cart[name]) return;
-    cart[name].qty--;
-    if(cart[name].qty<=0) delete cart[name];
-    updateCart(); refreshQty();
-  }
-  function clearCart(){ cart={}; updateCart(); refreshQty(); }
+      <div class="contact">
+        <div>
+          <h3>Обсудим ваш проект</h3>
+          <p>
+            10–15 минут: поймём задачу и предложим решение.
+            Можно начать с сайта и брони, а потом добавить CRM, бонусы и аналитику.
+          </p>
+          <div style="margin-top:14px;display:flex;gap:12px;flex-wrap:wrap">
+            <a class="btn primary" href="https://wa.me/87066861056?text=%D0%9F%D1%80%D0%B8%D0%B2%D0%B5%D1%82!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B1%D0%B5%D1%81%D0%BF%D0%BB%D0%B0%D1%82%D0%BD%D1%83%D1%8E%20%D0%BA%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%86%D0%B8%D1%8E%20LoungeTech%20%D0%BF%D0%BE%20%D0%B1%D1%80%D0%BE%D0%BD%D1%8F%D0%BC%2C%20CRM%20%D0%B8%20%D0%B1%D0%BE%D0%BD%D1%83%D1%81%D0%B0%D0%BC." target="_blank" rel="noopener">
+              Написать в WhatsApp
+            </a>
+            <a class="btn" href="#services">Посмотреть услуги</a>
+          </div>
+        </div>
 
-  function blocks(){
-    const d = DATA[lang];
-    const out=[];
-    if(section==='all'||section==='food') out.push(...d.food);
-    if(section==='all'||section==='bar') out.push(...d.bar);
-    return out;
-  }
+        <div class="box">
+          <div class="kv">
+            <div>
+              <div class="label">WhatsApp</div>
+              <div class="value">+7 706 686 1056</div>
+            </div>
+            <a class="btn small" href="https://wa.me/87066861056" target="_blank" rel="noopener">Открыть</a>
+          </div>
+          <div style="height:12px"></div>
+          <div class="kv">
+            <div>
+              <div class="label">Город</div>
+              <div class="value">Астана</div>
+            </div>
+          </div>
+          <div style="height:12px"></div>
+          <div class="kv">
+            <div>
+              <div class="label">Формат</div>
+              <div class="value">Premium venues • VIP rooms</div>
+            </div>
+          </div>
+          <div style="height:12px"></div>
+          <div class="kv">
+            <div>
+              <div class="label">Кейс</div>
+              <div class="value">Autograph</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  function render(){
-    const q = ($('q').value||'').trim().toLowerCase();
-    const root = $('menu');
-    root.innerHTML='';
+    <footer>
+      <div class="wrap" style="padding:0">
+        © <span id="y"></span> LoungeTech. Все права защищены.
+      </div>
+    </footer>
+  </main>
 
-    for(const cat of blocks()){
-      const items = cat.items.filter(([n]) => !q || n.toLowerCase().includes(q));
-      if(!items.length) continue;
+  <script>
+    // Footer year
+    document.getElementById('y').textContent = new Date().getFullYear();
 
-      const wrap = document.createElement('div');
-      wrap.className='category';
-      const h2=document.createElement('h2');
-      h2.textContent=cat.name;
-      wrap.appendChild(h2);
-
-      for(const [name, price] of items){
-        const row=document.createElement('div');
-        row.className='item';
-
-        const left=document.createElement('div');
-        left.className='iname';
-        left.textContent=name;
-
-        const ps=document.createElement('span');
-        ps.className='iprice';
-        ps.textContent = fmt(price)+' ₸';
-        left.appendChild(ps);
-
-        const ctr=document.createElement('div');
-        ctr.className='controls';
-
-        const bSub=document.createElement('button');
-        bSub.className='btn';
-        bSub.textContent='−';
-        bSub.dataset.action='sub';
-        bSub.dataset.name=name;
-
-        const qty=document.createElement('div');
-        qty.className='qty';
-        qty.dataset.qty=name;
-        qty.textContent=String(cart[name]?.qty||0);
-
-        const bAdd=document.createElement('button');
-        bAdd.className='btn';
-        bAdd.textContent='+';
-        bAdd.dataset.action='add';
-        bAdd.dataset.name=name;
-        bAdd.dataset.price=String(price);
-
-        ctr.appendChild(bSub); ctr.appendChild(qty); ctr.appendChild(bAdd);
-        row.appendChild(left); row.appendChild(ctr);
-        wrap.appendChild(row);
-      }
-      root.appendChild(wrap);
-    }
-  }
-
-  function refreshQty(){
-    document.querySelectorAll('[data-qty]').forEach(el=>{
-      const name=el.dataset.qty;
-      el.textContent=String(cart[name]?.qty||0);
-    });
-  }
-
-  function updateCart(){
-    const entries = Object.entries(cart);
-    if(!entries.length){
-      $('cartItems').textContent=ui().empty;
-      $('total').textContent=ui().total+': 0 ₸';
-      $('breakdown').textContent='';
-      return;
-    }
-    let sum=0, html='';
-    for(const [name, it] of entries){
-      const line=it.price*it.qty;
-      sum+=line;
-      html += `${name} ×${it.qty} — ${fmt(line)} ₸<br>`;
-    }
-    const svcOn = $('svc').checked;
-    const svc = svcOn ? Math.round(sum*0.10) : 0;
-    const total = sum + svc;
-
-    $('cartItems').innerHTML=html;
-    $('total').textContent=ui().total+': '+fmt(total)+' ₸';
-    $('breakdown').textContent = svcOn
-      ? `${ui().sum}: ${fmt(sum)} ₸ + ${ui().svcLine}: ${fmt(svc)} ₸`
-      : `${ui().sum}: ${fmt(sum)} ₸ (${ui().svcOff})`;
-  }
-
-  function orderText(){
-    const entries=Object.entries(cart);
-    if(!entries.length) return '';
-    const svcOn=$('svc').checked;
-    let sum=0;
-    let t=`AUTOGRAPH GOLD — ${ui().modal.toLowerCase()}\n\n`;
-    for(const [name, it] of entries){
-      const line=it.price*it.qty;
-      sum+=line;
-      t += `• ${name} ×${it.qty} — ${fmt(line)} ₸\n`;
-    }
-    const svc=svcOn?Math.round(sum*0.10):0;
-    const total=sum+svc;
-    t += `\n${ui().sum}: ${fmt(sum)} ₸\n`;
-    t += svcOn ? `${ui().svcLine}: ${fmt(svc)} ₸\n` : `${ui().svcOff}\n`;
-    t += `${ui().total}: ${fmt(total)} ₸\n`;
-    t += `\n${lang==='ru'?'Обслуживание: 10%':'Қызмет: 10%'}`;
-    return t;
-  }
-
-  async function copyOrder(){
-    const t=orderText(); if(!t) return;
-    try{ await navigator.clipboard.writeText(t); alert(ui().copied); }
-    catch{ /* если браузер запрещает */ $('orderText').textContent=t; showModal(); }
-  }
-  function showModal(){
-    const t=orderText(); if(!t) return;
-    $('orderText').textContent=t;
-    $('mb').style.display='flex';
-  }
-  function hideModal(){ $('mb').style.display='none'; }
-  function sendWA(){
-    const t=orderText(); if(!t) return;
-    window.open(`https://wa.me/${WA_PHONE}?text=${encodeURIComponent(t)}`, '_blank');
-  }
-
-  document.addEventListener('click',(e)=>{
-    const t=e.target;
-    if(t.matches('[data-lang]')) return setLang(t.dataset.lang);
-    if(t.matches('[data-section]')) return setSection(t.dataset.section);
-
-    if(t.dataset.action){
-      const name=t.dataset.name;
-      if(t.dataset.action==='add') return add(name, Number(t.dataset.price||0));
-      return sub(name);
-    }
-
-    if(t.id==='clearBtn') return clearCart();
-    if(t.id==='copyBtn') return showModal();
-    if(t.id==='sendBtn') return sendWA();
-
-    if(t.id==='mCopy') return copyOrder();
-    if(t.id==='mClose' || t.id==='mb') return hideModal();
-  });
-
-  $('q').addEventListener('input', render);
-  $('svc').addEventListener('change', updateCart);
-
-  setLang('ru');
-  setSection('all');
-</script>
+    // Scroll reveal
+    (function () {
+      const els = document.querySelectorAll('.reveal');
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible'); });
+      }, { threshold: 0.12 });
+      els.forEach(el => io.observe(el));
+    })();
+  </script>
 </body>
 </html>
